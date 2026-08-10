@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome to WellnessIQ - Onboarding</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
+<script src="{{ url_for('static', filename='theme.js') }}"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+body {
+    margin: 0;
+    font-family: 'Outfit', sans-serif;
+    background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 50%, #d1fae5 100%);
+    background-size: 200% 200%;
+    animation: gradientBG 15s ease infinite;
+    color: #0f172a;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+.card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+}
+h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    background: linear-gradient(to right, #10b981, #3b82f6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 10px;
+}
+p {
+    color: #475569;
+    margin-bottom: 30px;
+}
+.field {
+    text-align: left;
+    margin-bottom: 20px;
+}
+label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #475569;
+}
+input, select {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    font-family: 'Outfit', sans-serif;
+    font-size: 15px;
+    box-sizing: border-box;
+}
+button {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, #10b981, #3b82f6);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+    transition: transform 0.2s;
+}
+button:hover { transform: translateY(-2px); }
+body.dark-mode .card {
+    background: rgba(30, 41, 59, 0.85);
+}
+body.dark-mode p, body.dark-mode label { color: #94a3b8; }
+</style>
+</head>
+<body>
+<div class="card">
+    <h1>Welcome to WellnessIQ! ✨</h1>
+    <p>Let's set up your base insights so we can personalize your experience.</p>
+    <form method="POST" action="/onboarding">
+        <div class="field">
+            <label>Age (years)</label>
+            <input type="number" name="age" required min="1" max="120" placeholder="e.g. 25">
+        </div>
+        <div class="field">
+            <label>Gender</label>
+            <select name="gender" required>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+            </select>
+        </div>
+        <div class="field">
+            <label>Current Weight (kg)</label>
+            <input type="number" name="weight" required min="1" max="500" placeholder="e.g. 70">
+        </div>
+        <div class="field">
+            <label>Primary Fitness Goal</label>
+            <select name="goal" required>
+                <option value="weight_loss">Weight Loss</option>
+                <option value="muscle_gain">Muscle Gain</option>
+                <option value="stress_relief">Stress Relief & Maintenance</option>
+            </select>
+        </div>
+        <button type="submit">Save Profile & Go to Dashboard</button>
+    </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-i18n="prog_title">Health Insights & Progress</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
+<script src="{{ url_for('static', filename='theme.js') }}"></script>
+<script src="{{ url_for('static', filename='i18n.js') }}"></script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+
+body {
+    margin: 0;
+    font-family: 'Outfit', sans-serif;
+    background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 50%, #d1fae5 100%);
+    background-size: 200% 200%;
+    animation: gradientBG 15s ease infinite;
+    color: #0f172a;
+    min-height: 100vh;
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 40px 20px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+    background: linear-gradient(to right, #8b5cf6, #3b82f6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(255, 255, 255, 1);
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.score-card {
+    text-align: center;
+}
+
+.score-circle {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin: 0 auto 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: 800;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+}
+
+.score-circle::before {
+    content: '';
+    position: absolute;
+    top: -5px; left: -5px; right: -5px; bottom: -5px;
+    border-radius: 50%;
+    border: 5px solid transparent;
+    z-index: -1;
+}
+
+.score-green { color: #10b981; }
+.score-green::before { border-top-color: #10b981; border-right-color: #10b981; transform: rotate(45deg); }
+
+.score-yellow { color: #f59e0b; }
+.score-yellow::before { border-top-color: #f59e0b; border-right-color: transparent; transform: rotate(45deg); }
+
+.score-red { color: #ef4444; }
+.score-red::before { border-top-color: #ef4444; border-right-color: transparent; border-bottom-color: transparent; transform: rotate(45deg); }
+
+.progress-bar-container {
+    background: rgba(0,0,0,0.05);
+    border-radius: 10px;
+    height: 12px;
+    width: 100%;
+    margin-top: 10px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 1s ease-in-out;
+}
+
+.badge {
+    background: linear-gradient(135deg, #ffd700, #ff8c00);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 15px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 800;
+    box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
+    margin: 5px;
+}
+
+canvas {
+    margin-top: 20px;
+    max-height: 250px;
+}
+
+h3 { margin-top: 0; color: #0f172a; }
+.text-gray { color: #475569; font-size: 0.9rem; }
+
+/* Dark mode overrides */
+body.dark-mode .card {
+    background: rgba(30, 41, 59, 0.7);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+body.dark-mode h3 { color: #f8fafc; }
+body.dark-mode .text-gray { color: #94a3b8; }
+</style>
+</head>
+
+<body>
+<div class="container">
+    <div class="header" style="position:relative;">
+        <div style="position:absolute; top:0; right:0; display:flex; align-items:center; gap:10px;">
+            <button onclick="toggleTheme()" style="background:none; border:none; padding:8px; box-shadow:none; cursor:pointer; font-size:1.5rem; margin:0; width:auto;">🌓</button>
+            <button class="lang-btn" data-lang="en" onclick="setLanguage('en')" style="background:none; border:none; cursor:pointer; font-weight:800; text-decoration:underline;">EN</button><span>|</span>
+            <button class="lang-btn" data-lang="hi" onclick="setLanguage('hi')" style="background:none; border:none; cursor:pointer; font-weight:600;">HI</button>
+            <a href="/dashboard" class="btn" style="padding:8px 16px;">Back to App</a>
+        </div>
+        <h1 data-i18n="prog_title">Health Insights & Progress</h1>
+        <p class="text-gray" data-i18n="prog_desc">Track your journey, milestones, and advanced statistics.</p>
+    </div>
+
+    <div id="noData" style="display:none; text-align:center; margin-top:50px;">
+        <h2>No Data Found!</h2>
+        <p>Please complete at least one assessment on the dashboard to view your progress.</p>
+        <a href="/dashboard" class="btn">Go to Dashboard</a>
+    </div>
+
+    <div id="dashboardContent" style="display:none;">
+        
+        <!-- USER PROFILE -->
+        <h2 style="margin-bottom:20px;">Your Profile Details</h2>
+        <div class="card" style="margin-bottom: 30px; display: flex; justify-content: space-around; flex-wrap: wrap; text-align: center;">
+            <div style="margin: 10px;">
+                <h3 style="margin-bottom: 5px; color: #475569;">Age</h3>
+                <div style="font-size: 2rem; font-weight: 800; color: #3b82f6;" id="profAge">--</div>
+            </div>
+            <div style="margin: 10px;">
+                <h3 style="margin-bottom: 5px; color: #475569;">Gender</h3>
+                <div style="font-size: 2rem; font-weight: 800; color: #10b981;" id="profGender">--</div>
+            </div>
+            <div style="margin: 10px;">
+                <h3 style="margin-bottom: 5px; color: #475569;">Weight</h3>
+                <div style="font-size: 2rem; font-weight: 800; color: #8b5cf6;" id="profWeight">--</div>
+            </div>
+            <div style="margin: 10px;">
+                <h3 style="margin-bottom: 5px; color: #475569;">Goal</h3>
+                <div style="font-size: 2rem; font-weight: 800; color: #f59e0b; text-transform: capitalize;" id="profGoal">--</div>
+            </div>
+        </div>
+
+        <!-- SCORES -->
+        <h2 style="margin-bottom:20px;" data-i18n="prog_scores">Wellness Scores</h2>
+        <div class="grid">
+            <div class="card score-card">
+                <h3>Overall Wellness</h3>
+                <div class="score-circle" id="overallScoreRing">
+                    <span id="overallScore">0</span>%
+                </div>
+                <p class="text-gray" id="overallText">Based on aggregate data</p>
+            </div>
+            <div class="card score-card">
+                <h3>Sleep Quality</h3>
+                <div class="score-circle" id="sleepScoreRing">
+                    <span id="sleepScore">0</span>
+                </div>
+                <p class="text-gray" id="sleepText">Efficiency score</p>
+            </div>
+            <div class="card score-card">
+                <h3>Hydration Level</h3>
+                <div class="score-circle" id="waterScoreRing">
+                    <span id="waterScore">0</span>%
+                </div>
+                <p class="text-gray" id="waterText">Daily target completion</p>
+            </div>
+        </div>
+
+        <!-- TARGETS & PREDICTIONS -->
+        <div class="grid">
+            <div class="card">
+                <h3 data-i18n="prog_targets">Daily Targets Tracker</h3>
+                <div style="margin-bottom: 15px;">
+                    <div style="display:flex; justify-content:space-between; font-weight:600;">
+                        <span>Steps</span> <span id="stepProgressTxt">0/10000</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="stepBar" style="background:#10b981; width:0%;"></div>
+                    </div>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <div style="display:flex; justify-content:space-between; font-weight:600;">
+                        <span>Water (L)</span> <span id="waterProgressTxt">0/2.5</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="waterBar" style="background:#3b82f6; width:0%;"></div>
+                    </div>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <div style="display:flex; justify-content:space-between; font-weight:600;">
+                        <span>Protein (g)</span> <span id="proteinProgressTxt">0/60</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="proteinBar" style="background:#f59e0b; width:0%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Predictive Analytics & Risks</h3>
+                <div id="riskContainer" style="display:flex; flex-direction:column; gap:10px;">
+                    <!-- Filled dynamically -->
+                </div>
+            </div>
+        </div>
+
+        <!-- GAMIFICATION -->
+        <h2 style="margin-bottom:20px;" data-i18n="prog_gamification">Achievements & Streaks</h2>
+        <div class="card" style="margin-bottom:30px;">
+            <div style="display:flex; align-items:center; gap:30px; flex-wrap:wrap;">
+                <div style="text-align:center;">
+                    <div style="font-size:3rem; font-weight:800; color:#ef4444;" id="streakCount">0</div>
+                    <div class="text-gray">Day Streak 🔥</div>
+                </div>
+                <div style="text-align:center;">
+                    <div style="font-size:3rem; font-weight:800; color:#8b5cf6;" id="totalAssessments">0</div>
+                    <div class="text-gray">Total Logs 📝</div>
+                </div>
+                <div style="flex:1;">
+                    <h3 style="margin-bottom:10px;">Badges Earned</h3>
+                    <div id="badgeContainer" style="display:flex; flex-wrap:wrap; gap:10px;">
+                        <!-- Filled dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TRENDS -->
+        <h2 style="margin-bottom:20px;" data-i18n="prog_trends">Historical Trends</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>Sleep Trend (hrs)</h3>
+                <canvas id="trendSleep"></canvas>
+            </div>
+            <div class="card">
+                <h3>Stress Trend (1-10)</h3>
+                <canvas id="trendStress"></canvas>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+    try {
+        const res = await fetch('/api/history');
+        const data = await res.json();
+        
+        const history = data.history;
+        const profile = data.profile;
+        
+        if(!history || history.length === 0) {
+            document.getElementById('noData').style.display = 'block';
+            return;
+        }
+
+        document.getElementById('dashboardContent').style.display = 'block';
+        
+        // POPULATE USER PROFILE
+        if(profile) {
+            document.getElementById('profAge').innerText = profile.age || '--';
+            document.getElementById('profGender').innerText = profile.gender || '--';
+            document.getElementById('profWeight').innerText = profile.weight ? profile.weight + ' kg' : '--';
+            document.getElementById('profGoal').innerText = profile.goal ? profile.goal.replace('_', ' ') : '--';
+        }
+
+        const latest = history[history.length - 1];
+
+    // SCORING LOGIC
+    let sleepScore = latest.sleep_hours >= 7 && latest.sleep_hours <= 9 ? 100 : (latest.sleep_hours < 5 ? 30 : 70);
+    let waterTarget = (latest.weight || 70) * 0.033;
+    let waterScore = Math.min(100, Math.round((latest.water_intake / waterTarget) * 100));
+    let stressScore = 100 - (latest.stress_level * 10);
+    let stepScore = Math.min(100, Math.round((latest.steps_walked / 10000) * 100));
+    
+    let overall = Math.round((sleepScore + waterScore + stressScore + stepScore) / 4);
+
+    // Update Rings
+    updateRing('overallScore', overall);
+    updateRing('sleepScore', sleepScore);
+    updateRing('waterScore', waterScore);
+
+    // Update Targets
+    let stepPerc = Math.min(100, (latest.steps_walked/10000)*100);
+    document.getElementById('stepBar').style.width = stepPerc + '%';
+    document.getElementById('stepProgressTxt').innerText = `${latest.steps_walked}/10000`;
+
+    let wPerc = Math.min(100, (latest.water_intake/waterTarget)*100);
+    document.getElementById('waterBar').style.width = wPerc + '%';
+    document.getElementById('waterProgressTxt').innerText = `${latest.water_intake.toFixed(1)}/${waterTarget.toFixed(1)}`;
+
+    let pTarget = (latest.weight || 70) * 1.2; // 1.2g per kg
+    let pPerc = Math.min(100, ((latest.protein_intake||0)/pTarget)*100);
+    document.getElementById('proteinBar').style.width = pPerc + '%';
+    document.getElementById('proteinProgressTxt').innerText = `${latest.protein_intake || 0}/${pTarget.toFixed(0)}`;
+
+    // Predictive Risks
+    let risks = [];
+    if(latest.sleep_hours < 6) risks.push({msg: "High Fatigue Risk", color: "#ef4444", icon:"⚠️"});
+    else risks.push({msg: "Optimal Sleep Rhythm", color: "#10b981", icon:"✅"});
+
+    if(latest.stress_level > 7) risks.push({msg: "High Burnout Risk", color: "#ef4444", icon:"⚠️"});
+    else risks.push({msg: "Stress Levels Managed", color: "#10b981", icon:"✅"});
+
+    if((latest.screen_time || 0) > 8) risks.push({msg: "Digital Eye Strain Risk", color: "#f59e0b", icon:"👀"});
+
+    const riskCont = document.getElementById('riskContainer');
+    risks.forEach(r => {
+        riskCont.innerHTML += `<div style="padding:10px 15px; border-radius:10px; background:${r.color}20; color:${r.color}; font-weight:600; display:flex; gap:10px;"><span>${r.icon}</span> ${r.msg}</div>`;
+    });
+
+    // Gamification
+    document.getElementById('totalAssessments').innerText = history.length;
+    
+    // Streak logic (basic implementation)
+    let streak = 1;
+    for(let i=history.length-1; i>0; i--) {
+        let d1 = new Date(history[i].timestamp).getDate();
+        let d2 = new Date(history[i-1].timestamp).getDate();
+        if(d1 === d2 || d1 - d2 === 1 || (d1 < d2)) streak++; // simplify logic for now
+        else break;
+    }
+    document.getElementById('streakCount').innerText = streak;
+
+    let badges = [];
+    if(history.length >= 1) badges.push("🚀 First Step");
+    if(streak >= 3) badges.push("🔥 3-Day Streak");
+    if(streak >= 7) badges.push("🌟 Weekly Warrior");
+    if(latest.water_intake >= waterTarget) badges.push("💧 Hydration Hero");
+    if(latest.steps_walked >= 10000) badges.push("👟 Step Master");
+
+    const badgeCont = document.getElementById('badgeContainer');
+    badges.forEach(b => {
+        badgeCont.innerHTML += `<div class="badge">${b}</div>`;
+    });
+
+    // Charts
+    Chart.defaults.color = document.body.classList.contains('dark-mode') ? '#94a3b8' : '#475569';
+    Chart.defaults.font.family = 'Outfit';
+
+    let labels = history.slice(-7).map((h, i) => `Day ${i+1}`);
+    let sleepData = history.slice(-7).map(h => h.sleep_hours);
+    let stressData = history.slice(-7).map(h => h.stress_level);
+
+    new Chart(document.getElementById('trendSleep').getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Sleep Hours',
+                data: sleepData,
+                borderColor: '#8b5cf6',
+                tension: 0.4,
+                fill: true,
+                backgroundColor: 'rgba(139, 92, 246, 0.1)'
+            }]
+        },
+        options: { plugins: { legend: { display: false } } }
+    });
+
+    new Chart(document.getElementById('trendStress').getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Stress Level',
+                data: stressData,
+                borderColor: '#ef4444',
+                tension: 0.4,
+                fill: true,
+                backgroundColor: 'rgba(239, 68, 68, 0.1)'
+            }]
+        },
+        options: { plugins: { legend: { display: false } } }
+    });
+
+    } catch(e) {
+        console.error("Failed to load history", e);
+    }
+});
+
+function updateRing(id, val) {
+    document.getElementById(id).innerText = val;
+    let ring = document.getElementById(id + 'Ring');
+    if(val >= 80) ring.classList.add('score-green');
+    else if(val >= 50) ring.classList.add('score-yellow');
+    else ring.classList.add('score-red');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WellnessIQ - AI Health Assistant</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
+<script src="{{ url_for('static', filename='theme.js') }}"></script>
+<script src="{{ url_for('static', filename='i18n.js') }}"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+
+:root {
+    --primary: #0ea5e9; /* Sky Blue */
+    --secondary: #3b82f6; /* Royal Blue */
+    --text-dark: #f8fafc;
+    --text-gray: #94a3b8;
+    --bg-light: #0b1120;
+}
+
+body {
+    margin: 0;
+    font-family: 'Outfit', sans-serif;
+    background-color: #0b1120;
+    background-image: radial-gradient(circle at 50% -20%, #1e3a8a 0%, #0b1120 60%);
+    background-attachment: fixed;
+    color: var(--text-dark);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+}
+
+/* Glassmorphism Classes */
+.glass {
+    background: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.gradient-text {
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    padding: 12px 28px;
+    border-radius: 30px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: white;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--primary);
+    border: 2px solid var(--primary);
+    box-shadow: none;
+}
+.btn-outline:hover {
+    background: rgba(14, 165, 233, 0.1);
+}
+
+/* Navbar */
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    padding: 15px 0;
+    transition: all 0.3s ease;
+}
+.navbar.scrolled {
+    background: rgba(11, 17, 32, 0.9);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+.logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.nav-links a {
+    margin: 0 15px;
+    color: var(--text-gray);
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+.nav-links a:hover {
+    color: var(--primary);
+}
+
+/* Container */
+.section {
+    padding: 100px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Hero */
+.hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 100vh;
+    padding-top: 80px;
+}
+.hero-content {
+    flex: 1;
+    padding-right: 50px;
+}
+.hero h1 {
+    font-size: 4rem;
+    line-height: 1.1;
+    margin-bottom: 20px;
+}
+.hero p {
+    font-size: 1.2rem;
+    color: var(--text-gray);
+    margin-bottom: 40px;
+    line-height: 1.6;
+}
+.hero-visual {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.hero-card {
+    border-radius: 24px;
+    padding: 40px;
+    width: 80%;
+    position: relative;
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+    100% { transform: translateY(0px); }
+}
+
+/* Stats */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    margin-top: -50px;
+    position: relative;
+    z-index: 10;
+}
+.stat-card {
+    border-radius: 20px;
+    padding: 30px;
+    text-align: center;
+}
+.stat-card h3 {
+    font-size: 3rem;
+    margin: 0;
+    font-weight: 800;
+}
+.stat-card p {
+    color: var(--text-gray);
+    margin-top: 10px;
+    font-weight: 600;
+}
+
+/* Features */
+.features-header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+.features-header h2 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+}
+.feature-card {
+    padding: 40px 30px;
+    border-radius: 20px;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+.feature-card:hover {
+    transform: translateY(-10px);
+}
+.feature-icon {
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+.feature-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+}
+.feature-card p {
+    color: var(--text-gray);
+    line-height: 1.5;
+}
+
+/* How It Works */
+.steps-container {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    margin-top: 50px;
+}
+.step {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    border-radius: 24px;
+    padding: 40px;
+}
+.step-number {
+    font-size: 4rem;
+    font-weight: 800;
+    opacity: 0.2;
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Team Section */
+.team-section {
+    text-align: center;
+}
+.team-section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 40px;
+}
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px;
+}
+.team-member {
+    padding: 30px;
+    border-radius: 20px;
+}
+.team-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2rem;
+    font-weight: 800;
+}
+.team-member h4 {
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+}
+.team-member p {
+    color: var(--text-gray);
+}
+
+.step-content h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+.step-content p {
+    color: var(--text-gray);
+}
+
+/* CTA Section */
+.cta-section {
+    text-align: center;
+    padding: 100px 20px;
+    border-radius: 30px;
+    margin: 50px auto;
+    max-width: 1000px;
+}
+.cta-section h2 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+/* Footer */
+footer {
+    background: rgba(11, 17, 32, 0.7);
+    padding: 60px 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 50px;
+}
+.footer-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+}
+.footer-col h4 {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+.footer-col p {
+    color: var(--text-gray);
+    line-height: 1.8;
+}
+.footer-col a {
+    color: var(--text-gray);
+    line-height: 1.8;
+    display: inline-block;
+}
+.footer-bottom {
+    text-align: center;
+    margin-top: 50px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(0,0,0,0.05);
+    color: var(--text-gray);
+    font-size: 0.9rem;
+}
+
+.home-mobile-toggle {
+    display: none;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: var(--text-dark);
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 1.3rem;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .hero { flex-direction: column; text-align: center; padding-top: 120px; min-height: auto; }
+    .hero-content { padding-right: 0; }
+    .hero-visual {
+        display: flex !important;
+        width: 100%;
+        margin-top: 36px;
+    }
+    .hero-card {
+        width: 100% !important;
+        padding: 24px 20px !important;
+        box-sizing: border-box;
+    }
+    .stats-grid { grid-template-columns: 1fr; margin-top: 50px; }
+    .footer-grid { grid-template-columns: 1fr; text-align: center; }
+
+    .home-mobile-toggle {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .nav-links {
+        display: none !important;
+        position: absolute;
+        top: 100%;
+        left: 0; right: 0;
+        background: rgba(11, 17, 32, 0.96);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        flex-direction: column;
+        align-items: stretch !important;
+        padding: 20px 24px;
+        gap: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    .nav-links.open {
+        display: flex !important;
+    }
+
+    .nav-links a {
+        margin: 0 !important;
+        padding: 12px 16px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.03);
+        text-align: center;
+        font-size: 1.05rem;
+    }
+
+    .nav-links .btn {
+        width: 100%;
+        box-sizing: border-box;
+        text-align: center;
+        margin-top: 4px;
+    }
+
+    .nav-lang-group {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 0;
+    }
+}
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar glass">
+    <div class="container">
+        <a href="/" class="logo">
+            <span style="font-size:1.8rem">⚡</span> WellnessIQ
+        </a>
+        <button class="home-mobile-toggle" onclick="toggleHomeNav()" aria-label="Toggle navigation menu">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:24px;height:24px;stroke-width:2;"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        </button>
+        <div class="nav-links" id="homeNavLinks">
+            <div class="nav-lang-group">
+                <button class="theme-toggle-btn" onclick="toggleTheme()" style="position:static; margin-right:10px; padding:0;">🌓</button>
+                <button class="lang-btn" data-lang="en" onclick="setLanguage('en')" style="background:none; border:none; cursor:pointer; font-weight:800; color:inherit; text-decoration:underline;">EN</button>
+                <span style="margin:0 4px; opacity:0.5;">|</span>
+                <button class="lang-btn" data-lang="hi" onclick="setLanguage('hi')" style="background:none; border:none; cursor:pointer; font-weight:600; color:inherit;">HI</button>
+            </div>
+            <a href="/" data-i18n="nav_home">Home</a>
+            <a href="/about" data-i18n="nav_about">About Us</a>
+            {% if session.get('user_id') %}
+            <a href="/dashboard" class="btn" style="padding: 10px 20px;">Dashboard</a>
+            <a href="/logout" data-i18n="nav_logout" style="color: #ef4444; font-weight: 600;">Logout</a>
+            {% else %}
+            <a href="/login" data-i18n="nav_login">Login</a>
+            <a href="/register" class="btn" style="padding: 10px 20px;" data-i18n="nav_signup">Sign Up</a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero section">
+    <div class="hero-content">
+        <h1 class="gradient-text" data-i18n="hero_title">Discover the Root Cause of Your Health Patterns</h1>
+        <p data-i18n="hero_desc">We analyze your daily lifestyle, sleep, and stress using advanced Machine Learning to provide clinical-grade, personalized health optimization plans.</p>
+        <div>
+            <a href="/register" class="btn" data-i18n="btn_start_free">Get Started Free</a>
+            <a href="/about" class="btn btn-outline" data-i18n="btn_learn_more">Learn More</a>
+        </div>
+    </div>
+    <div class="hero-visual">
+        <div class="hero-card glass">
+            <h3 style="text-align:center; font-size:1.5rem; margin-bottom:20px;">🧠 AI Analysis</h3>
+            <ul class="text-gray" style="list-style:none; padding:0; line-height:2.5; font-weight:600;">
+                <li>✅ 100% Science-Backed</li>
+                <li>✅ Personalized Insights</li>
+                <li>✅ Continuous Progress Tracking</li>
+                <li>✅ Actionable Interventions</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Grid -->
+<div class="section">
+    <div class="stats-grid">
+        <div class="stat-card glass">
+            <h3 class="gradient-text">60%</h3>
+            <p>of people face lifestyle burnout without realizing the root cause.</p>
+        </div>
+        <div class="stat-card glass">
+            <h3 class="gradient-text">85%</h3>
+            <p>accuracy in predicting fatigue and stress using our ML pipeline.</p>
+        </div>
+        <div class="stat-card glass">
+            <h3 class="gradient-text">24/7</h3>
+            <p>access to an expert AI clinical health and lifestyle analyst.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<section class="section">
+    <div class="features-header">
+        <h2><span data-i18n="feat_title">Why Choose </span><span class="gradient-text">WellnessIQ?</span></h2>
+        <p class="text-gray" style="font-size:1.1rem;">We don't just track data. We interpret it to give you the clinical edge.</p>
+    </div>
+    
+    <div class="features-grid">
+        <div class="feature-card glass">
+            <div class="feature-icon">🔍</div>
+            <h3 data-i18n="feat_1_title">Root Cause Analysis</h3>
+            <p data-i18n="feat_1_desc">Our ML engine analyzes your habits to find the exact triggers for poor sleep, stress, or fatigue.</p>
+        </div>
+        <div class="feature-card glass">
+            <div class="feature-icon">🍎</div>
+            <h3 data-i18n="feat_2_title">Holistic Approach</h3>
+            <p data-i18n="feat_2_desc">We bridge the gap between diet, exercise, and mental well-being for a complete transformation.</p>
+        </div>
+        <div class="feature-card glass">
+            <div class="feature-icon">⚡</div>
+            <h3 data-i18n="feat_3_title">Explainable AI</h3>
+            <p data-i18n="feat_3_desc">No generic advice. Every recommendation is tailored, concise, and clinically grounded in your data.</p>
+        </div>
+        <div class="feature-card glass">
+            <div class="feature-icon">📈</div>
+            <h3 data-i18n="feat_4_title">Progress Tracking</h3>
+            <p data-i18n="feat_4_desc">Watch your health metrics improve with our dynamic, interactive dashboard over time.</p>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="section">
+    <div class="features-header">
+        <h2><span data-i18n="how_title">How It </span><span class="gradient-text">Works</span></h2>
+    </div>
+    
+    <div class="steps-container">
+        <div class="step glass">
+            <div class="step-number">1</div>
+            <div class="step-content">
+                <h3 data-i18n="step_1_title">Share Your Daily Metrics</h3>
+                <p data-i18n="step_1_desc">Input your sleep, steps, stress levels, and diet into our secure dashboard.</p>
+            </div>
+        </div>
+        <div class="step glass">
+            <div class="step-number">2</div>
+            <div class="step-content">
+                <h3 data-i18n="step_2_title">Advanced ML Analysis</h3>
+                <p data-i18n="step_2_desc">Our trained HistGradientBoostingClassifier evaluates your metrics against thousands of baseline models.</p>
+            </div>
+        </div>
+        <div class="step glass">
+            <div class="step-number">3</div>
+            <div class="step-content">
+                <h3 data-i18n="step_3_title">Get Your Protocol</h3>
+                <p data-i18n="step_3_desc">Our Generative AI translates the ML baseline into an easy-to-follow, highly actionable daily plan.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Developer Section -->
+<section class="section">
+    <div class="team-section">
+        <h2><span data-i18n="dev_header_title">Meet the </span><span class="gradient-text">Developer</span></h2>
+        
+        <div class="developer-card glass" style="max-width: 740px; margin: 35px auto 0; padding: 36px 40px; border-radius: 24px; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.12); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); text-align: center;">
+            
+            <!-- Avatar -->
+            <div class="developer-avatar" style="width: 86px; height: 86px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #06b6d4); display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; font-weight: 800; margin: 0 auto 16px; box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4); border: 3px solid rgba(255, 255, 255, 0.2);">
+                YR
+            </div>
+            
+            <!-- Name & Title -->
+            <h3 style="font-size: 1.85rem; font-weight: 800; margin: 0 0 6px 0; color: #f8fafc; letter-spacing: -0.5px;">Yash Rastogi</h3>
+            <p style="color: #38bdf8; font-size: 1.1rem; font-weight: 700; margin: 0 0 16px 0;">Lead Full-Stack Architect &amp; AI/ML Engineer</p>
+            
+            <!-- Skill Badges -->
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 22px;">
+                <span style="background: rgba(16, 185, 129, 0.12); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); padding: 5px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">🐍 Python / Flask</span>
+                <span style="background: rgba(139, 92, 246, 0.12); color: #c084fc; border: 1px solid rgba(139, 92, 246, 0.3); padding: 5px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">🤖 Scikit-Learn ML</span>
+                <span style="background: rgba(14, 165, 233, 0.12); color: #38bdf8; border: 1px solid rgba(14, 165, 233, 0.3); padding: 5px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">✨ Gemini AI</span>
+                <span style="background: rgba(245, 158, 11, 0.12); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); padding: 5px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">🎨 Glassmorphism UX</span>
+            </div>
+
+            <!-- Summary -->
+            <p style="font-size: 1rem; line-height: 1.65; max-width: 600px; margin: 0 auto 28px; color: #cbd5e1; font-weight: 400;">
+                Sole developer &amp; architect of WellnessIQ—built the predictive ML models, Gemini AI insights engine, responsive glassmorphism interface, and i18n localization.
+            </p>
+
+            <!-- Divider Line -->
+            <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); margin: 28px 0;"></div>
+
+            <!-- What I Do Section -->
+            <div style="text-align: left; margin-bottom: 28px;">
+                <h4 style="color: #38bdf8; font-size: 1.15rem; font-weight: 700; margin: 0 0 18px 0; display: flex; align-items: center; gap: 8px;">
+                    <span>🚀</span> What I Do
+                </h4>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px 24px;">
+                    <div style="display: flex; align-items: center; gap: 10px; color: #e2e8f0; font-size: 0.95rem;">
+                        <svg fill="none" stroke="#38bdf8" viewBox="0 0 24 24" style="width:20px;height:20px;stroke-width:2.5;flex-shrink:0;"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span>End-to-end full-stack development</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px; color: #e2e8f0; font-size: 0.95rem;">
+                        <svg fill="none" stroke="#38bdf8" viewBox="0 0 24 24" style="width:20px;height:20px;stroke-width:2.5;flex-shrink:0;"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span>RESTful APIs with Flask</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px; color: #e2e8f0; font-size: 0.95rem;">
+                        <svg fill="none" stroke="#38bdf8" viewBox="0 0 24 24" style="width:20px;height:20px;stroke-width:2.5;flex-shrink:0;"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span>ML model training &amp; evaluation</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px; color: #e2e8f0; font-size: 0.95rem;">
+                        <svg fill="none" stroke="#38bdf8" viewBox="0 0 24 24" style="width:20px;height:20px;stroke-width:2.5;flex-shrink:0;"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span>Database design &amp; optimization</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px; color: #e2e8f0; font-size: 0.95rem;">
+                        <svg fill="none" stroke="#38bdf8" viewBox="0 0 24 24" style="width:20px;height:20px;stroke-width:2.5;flex-shrink:0;"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span>AI insights using Gemini AI</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px; color: #e2e8f0; font-size: 0.95rem;">
+                        <svg fill="none" stroke="#38bdf8" viewBox="0 0 24 24" style="width:20px;height:20px;stroke-width:2.5;flex-shrink:0;"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span>i18n localization (EN / HI)</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px; color: #e2e8f0; font-size: 0.95rem;">
+                        <svg fill="none" stroke="#38bdf8" viewBox="0 0 24 24" style="width:20px;height:20px;stroke-width:2.5;flex-shrink:0;"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span>Data pipeline &amp; preprocessing</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px; color: #e2e8f0; font-size: 0.95rem;">
+                        <svg fill="none" stroke="#38bdf8" viewBox="0 0 24 24" style="width:20px;height:20px;stroke-width:2.5;flex-shrink:0;"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span>Performance tuning &amp; deployment</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px; color: #e2e8f0; font-size: 0.95rem;">
+                        <svg fill="none" stroke="#38bdf8" viewBox="0 0 24 24" style="width:20px;height:20px;stroke-width:2.5;flex-shrink:0;"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span>Responsive UI with Glassmorphism UX</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px; color: #e2e8f0; font-size: 0.95rem;">
+                        <svg fill="none" stroke="#38bdf8" viewBox="0 0 24 24" style="width:20px;height:20px;stroke-width:2.5;flex-shrink:0;"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span>System architecture &amp; scalability</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Divider Line -->
+            <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); margin: 28px 0 22px;"></div>
+
+            <!-- Let's Connect Section -->
+            <h4 style="color: #38bdf8; font-size: 1.1rem; font-weight: 700; margin: 0 0 18px 0; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <span>🔗</span> Let's Connect
+            </h4>
+
+            <!-- Social / Action Buttons -->
+            <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+                <a href="https://yashrastogi-portfolio.netlify.app/" target="_blank" rel="noopener noreferrer" style="background: linear-gradient(135deg, #a855f7, #ec4899); color: white; padding: 10px 22px; border-radius: 30px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-size: 0.92rem; box-shadow: 0 6px 18px rgba(168, 85, 247, 0.35);">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:18px;height:18px;"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+                    Portfolio
+                </a>
+                <a href="https://www.linkedin.com/in/yash-rastogi-4037152a5/" target="_blank" rel="noopener noreferrer" style="background: #0284c7; color: white; padding: 10px 22px; border-radius: 30px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-size: 0.92rem; box-shadow: 0 6px 18px rgba(2, 132, 199, 0.35);">
+                    <svg fill="currentColor" viewBox="0 0 24 24" style="width:18px;height:18px;"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.74a1.56 1.56 0 1 0 0 3.12 1.56 1.56 0 0 0 0-3.12Z"/></svg>
+                    LinkedIn
+                </a>
+                <a href="https://github.com/gravityash" target="_blank" rel="noopener noreferrer" style="background: rgba(30, 41, 59, 0.8); color: white; border: 1px solid rgba(255, 255, 255, 0.2); padding: 10px 22px; border-radius: 30px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-size: 0.92rem; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);">
+                    <svg fill="currentColor" viewBox="0 0 24 24" style="width:18px;height:18px;"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+                    GitHub
+                </a>
+                <a href="mailto:rastogi21yr@gmail.com" style="background: rgba(15, 118, 110, 0.7); color: white; border: 1px solid rgba(45, 212, 191, 0.3); padding: 10px 22px; border-radius: 30px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-size: 0.92rem; box-shadow: 0 6px 18px rgba(15, 118, 110, 0.35);">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:18px;height:18px;"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    Email
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="section">
+    <div class="cta-section glass">
+        <h2 data-i18n="cta_title">Ready to Transform Your Health?</h2>
+        <p class="text-gray" style="font-size:1.2rem; margin-bottom:30px;">Get your personalized analysis in just 5 minutes.</p>
+        <a href="/register" class="btn" style="font-size:1.3rem; padding:15px 40px;" data-i18n="btn_start_analysis">Start Free Analysis</a>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <div class="footer-grid">
+        <div class="footer-col">
+            <div class="logo" style="margin-bottom:15px;">⚡ WellnessIQ</div>
+            <p data-i18n="footer_desc">Empowering you to take control of your health through data-driven AI insights.</p>
+        </div>
+        <div class="footer-col">
+            <h4 data-i18n="footer_links">Quick Links</h4>
+            <a href="/" data-i18n="nav_home">Home</a>
+            <a href="/about" data-i18n="nav_about">About Us</a>
+            <a href="/login" data-i18n="nav_login">Login</a>
+            <a href="/register">Sign Up</a>
+        </div>
+        <div class="footer-col">
+            <h4 data-i18n="footer_contact">Contact</h4>
+            <p style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                <svg fill="none" stroke="#38bdf8" stroke-width="2" viewBox="0 0 24 24" style="width:18px;height:18px;flex-shrink:0;"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                <a href="mailto:ansh2109hp@gmail.com" style="color:inherit;text-decoration:none;word-break:break-all;">ansh2109hp@gmail.com</a>
+            </p>
+            <p style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                <svg fill="none" stroke="#38bdf8" stroke-width="2" viewBox="0 0 24 24" style="width:18px;height:18px;flex-shrink:0;"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                <span>+91 7417069839</span>
+            </p>
+            <p style="display:flex; align-items:center; gap:8px;">
+                <svg fill="none" stroke="#38bdf8" stroke-width="2" viewBox="0 0 24 24" style="width:18px;height:18px;flex-shrink:0;"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                <span>Ghaziabad, UP</span>
+            </p>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2026 WellnessIQ. All rights reserved.</p>
+        <p style="font-size:0.8rem; margin-top:5px; opacity:0.7;">Medical Disclaimer: WellnessIQ provides lifestyle recommendations and is not a substitute for professional medical advice, diagnosis, or treatment.</p>
+    </div>
+</footer>
+
+<script>
+    function toggleHomeNav() {
+        const nav = document.getElementById('homeNavLinks');
+        if (nav) nav.classList.toggle('open');
+    }
+
+    // Sticky navbar effect
+    window.addEventListener('scroll', () => {
+        const nav = document.querySelector('.navbar');
+        if(window.scrollY > 50) {
+            nav.classList.add('scrolled');
+        } else {
+            nav.classList.remove('scrolled');
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,316 @@
+<div class="header-row" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 32px;">
+    <div>
+        <h1 class="page-title" id="pageTitle" style="font-size: 2.2rem; font-weight: 800; color: #f8fafc; margin: 0 0 8px 0;">Analysis</h1>
+        <p class="page-subtitle" id="pageSubtitle" style="color: #94a3b8; margin: 0; font-size: 1.05rem;">Deep-dive clinical insights based on your health metrics</p>
+    </div>
+</div>
+
+<!-- CLINICAL BASELINE -->
+<div class="baseline-card" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 24px 32px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px;">
+    <div class="baseline-title" style="display: flex; flex-direction: column; gap: 4px; border-right: 1px solid rgba(255,255,255,0.1); padding-right: 32px;">
+        <h3 style="margin: 0; display: flex; align-items: center; gap: 8px; font-size: 1.1rem; color: #f8fafc;"><svg fill="none" stroke="#3b82f6" viewBox="0 0 24 24" style="width:24px;height:24px;stroke-width:2;"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg> Clinical Baseline</h3>
+        <p id="baselineSub" style="margin: 0; font-size: 0.85rem; color: #94a3b8; font-weight: 500;">ML Routine Suggestion: Computing...</p>
+    </div>
+    <div style="display:flex; gap:40px;" id="baselineScoresGrid">
+        <!-- Injected via JS -->
+    </div>
+</div>
+
+<!-- INSIGHT CARDS -->
+<div id="insightCardsContainer">
+    <!-- Injected via JS -->
+</div>
+
+<!-- DYNAMIC AI DEEP DIVE -->
+<div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 32px; margin-top: 32px;">
+    <h3 style="color: #f8fafc; margin: 0 0 20px 0; display: flex; align-items: center; gap: 12px;">
+        <span style="font-size: 1.5rem;">🤖</span> Detailed AI Coaching Plan
+    </h3>
+    <div id="dynamicAiContainer" class="markdown-body" style="color: #cbd5e1; line-height: 1.6;">
+        <div class="loader" style="border: 3px solid rgba(255,255,255,0.3); border-top-color: #3b82f6; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; display: inline-block;"></div> Generating dynamic plan...
+    </div>
+</div>
+
+<script>
+(function() {
+    const TYPE = "{{ analysis_type }}";
+
+    const clamp = (val, min, max) => Math.min(Math.max(val, min), max);
+    const getStatus = (score) => score >= 80 ? { text: 'Good', cls: 'score-good', bg: 'bg-good', color: '#10b981'} : 
+                                 score >= 60 ? { text: 'Average', cls: 'score-avg', bg: 'bg-avg', color: '#f59e0b' } : 
+                                 { text: 'Needs Attention', cls: 'score-bad', bg: 'bg-bad', color: '#ef4444' };
+
+    async function loadAnalysisData() {
+        try {
+            const res = await fetch('/api/history');
+            const data = await res.json();
+            const history = data.history || [];
+            
+            if(history.length === 0) {
+                document.getElementById('insightCardsContainer').innerHTML = "<h3 style='text-align:center; color:#94a3b8; margin-top:50px;'>No data found. Please add data in Dashboard.</h3>";
+                return;
+            }
+            
+            const last = history[history.length - 1];
+            
+            const configs = {
+                hair_skin: {
+                    title: "Hair & Skin Analysis ✨", sub: "Skin Care & Repair",
+                    topScores: [
+                        { label: "Hydration", icon: "💧", bg: "#0284c7", val: clamp(Math.round((last.water_intake/3)*100), 10, 100) },
+                        { label: "Skin Health", icon: "✨", bg: "#7e22ce", val: clamp(Math.round(((last.sleep_hours/8)*50) + ((10-last.stress_level)*5)), 10, 100) },
+                        { label: "Hair Strength", icon: "💆", bg: "#ea580c", val: clamp(Math.round(((last.protein_intake/60)*50) + ((10-last.stress_level)*5)), 10, 100) },
+                        { label: "Scalp Health", icon: "🚿", bg: "#0284c7", val: 80 }
+                    ],
+                    cards: [
+                        {
+                            title: "Skin Glow Analysis", icon: "🌟", bg: "#0d9488",
+                            score: clamp(Math.round(((last.sleep_hours/8)*50) + ((10-last.stress_level)*5)), 10, 100), label: "Skin Glow Score",
+                            points: [
+                                { t: "Sleep Impact", d: `Your ${last.sleep_hours} hours of sleep ${last.sleep_hours < 7 ? 'severely limits your skin\'s repair time, leading to a dull complexion.' : 'provides excellent time for cellular repair and skin rejuvenation.'}` },
+                                { t: "Stress & Skin", d: `Your stress level (${last.stress_level}/10) ${last.stress_level > 6 ? 'can trigger breakouts, increase sensitivity, and reduce barrier function.' : 'is optimal for maintaining clear and calm skin.'}` },
+                                { t: "Hydration Synergy", d: `While ${last.water_intake}L of water is logged, ${last.water_intake < 2.5 ? 'increasing intake will plump the skin.' : 'your hydration is supporting a healthy glow.'}` }
+                            ],
+                            recs: [
+                                { text: "Improve sleep to 7-9 hours", icon: "🌙" },
+                                { text: "Manage stress (meditation)", icon: "🧘" },
+                                { text: "Hydrate consistently (2.5-3L/day)", icon: "💧" }
+                            ]
+                        },
+                        {
+                            title: "Hair Health Insights", icon: "🧬", bg: "#8b5cf6",
+                            score: clamp(Math.round(((last.protein_intake/60)*50) + ((10-last.stress_level)*5)), 10, 100), label: "Hair Strength Score",
+                            points: [
+                                { t: "Stress & Hair", d: `Elevated stress (${last.stress_level}/10) can impact hair growth cycles, potentially leading to increased shedding.` },
+                                { t: "Protein Foundation", d: `You consumed ${last.protein_intake}g of protein. ${last.protein_intake < 50 ? 'Hair is made of keratin, so increasing protein is vital.' : 'This solid intake supports strong hair follicles.'}` }
+                            ],
+                            recs: [
+                                { text: "Protein-rich diet (eggs, lentils)", icon: "🥚" },
+                                { text: "Scalp massage (5 mins daily)", icon: "💆" }
+                            ]
+                        }
+                    ]
+                },
+                workout: {
+                    title: "Workout Analysis 🏋️", sub: "Hypertrophy & Strength",
+                    topScores: [
+                        { label: "Activity Level", icon: "⚡", bg: "#ca8a04", val: clamp(Math.round((last.exercise_minutes/45)*100), 10, 100) },
+                        { label: "Recovery", icon: "🌙", bg: "#475569", val: clamp(Math.round((last.sleep_hours/8)*100), 10, 100) },
+                        { label: "Endurance", icon: "🏃", bg: "#ea580c", val: clamp(Math.round((last.steps_walked/10000)*100), 10, 100) },
+                        { label: "Readiness", icon: "🔋", bg: "#16a34a", val: clamp(Math.round(100 - (last.stress_level*5)), 10, 100) }
+                    ],
+                    cards: [
+                        {
+                            title: "Performance & Recovery", icon: "💪", bg: "#2563eb",
+                            score: clamp(Math.round((last.exercise_minutes/45)*50 + (last.sleep_hours/8)*50), 10, 100), label: "Performance Score",
+                            points: [
+                                { t: "Exercise Volume", d: `You exercised for ${last.exercise_minutes} minutes today. ${last.exercise_minutes < 30 ? 'Try to aim for at least 30 minutes to maintain cardiovascular health.' : 'Great job hitting an optimal active window!'}` },
+                                { t: "Recovery Check", d: `Recovery happens during sleep. With ${last.sleep_hours} hours of sleep, your muscles ${last.sleep_hours < 7 ? 'are not getting enough time to rebuild.' : 'are well-rested for the next session.'}` }
+                            ],
+                            recs: [
+                                { text: "Ensure 48h muscle rest", icon: "⏱️" },
+                                { text: "Stretch post-workout", icon: "🧘" }
+                            ]
+                        }
+                    ]
+                },
+                nutrition: {
+                    title: "Diet Analysis 🥗", sub: "Metabolic Balance",
+                    topScores: [
+                        { label: "Caloric Goal", icon: "🔥", bg: "#ea580c", val: clamp(Math.round((last.calories_intake/2500)*100), 10, 100) },
+                        { label: "Protein Ratio", icon: "🥩", bg: "#be123c", val: clamp(Math.round((last.protein_intake/100)*100), 10, 100) },
+                        { label: "Hydration", icon: "💧", bg: "#0284c7", val: clamp(Math.round((last.water_intake/3)*100), 10, 100) },
+                        { label: "Metabolism", icon: "⚡", bg: "#16a34a", val: 85 }
+                    ],
+                    cards: [
+                        {
+                            title: "Dietary Insights", icon: "🥑", bg: "#10b981",
+                            score: clamp(Math.round((last.calories_intake/2500)*50 + (last.water_intake/3)*50), 10, 100), label: "Nutrition Score",
+                            points: [
+                                { t: "Caloric Intake", d: `You consumed ${last.calories_intake} kcal. This ${last.calories_intake > 2500 ? 'puts you in a surplus.' : 'is within a healthy maintenance/deficit range.'}` },
+                                { t: "Protein Adequacy", d: `${last.protein_intake}g of protein is ${last.protein_intake < 60 ? 'on the lower end. Aim higher to preserve lean mass.' : 'excellent for muscle synthesis and satiety.'}` }
+                            ],
+                            recs: [
+                                { text: "Track macros daily", icon: "📊" },
+                                { text: "Increase fiber intake", icon: "🥦" }
+                            ]
+                        }
+                    ]
+                },
+                mental: {
+                    title: "Mental Wellness 🧘", sub: "Cognitive Harmony",
+                    topScores: [
+                        { label: "Stress Index", icon: "🧠", bg: "#b91c1c", val: clamp(Math.round(100 - (last.stress_level*10)), 10, 100) },
+                        { label: "Mindfulness", icon: "🧘", bg: "#4338ca", val: clamp(Math.round((last.meditation_minutes/20)*100), 10, 100) },
+                        { label: "Screen Balance", icon: "📱", bg: "#7e22ce", val: clamp(Math.round(100 - ((last.screen_time-4)*10)), 10, 100) },
+                        { label: "Rest Quality", icon: "🌙", bg: "#0891b2", val: clamp(Math.round((last.sleep_hours/8)*100), 10, 100) }
+                    ],
+                    cards: [
+                        {
+                            title: "Cognitive Load Analysis", icon: "🧩", bg: "#6366f1",
+                            score: clamp(Math.round(100 - (last.stress_level*5) - ((last.screen_time-4)*2)), 10, 100), label: "Wellness Score",
+                            points: [
+                                { t: "Stress & Anxiety", d: `Your stress level is ${last.stress_level}/10. ${last.stress_level > 6 ? 'High stress significantly reduces cognitive bandwidth.' : 'You are maintaining a calm state.'}` },
+                                { t: "Digital Fatigue", d: `With ${last.screen_time} hours of screen time, ${last.screen_time > 6 ? 'you are at high risk of digital eye strain and mental fatigue.' : 'your screen balance is healthy.'}` },
+                                { t: "Mindful Recovery", d: `You practiced ${last.meditation_minutes} mins of mindfulness. ${last.meditation_minutes < 10 ? 'Try to add 10 minutes to decompress.' : 'Great job dedicating time to mental clarity!'}` }
+                            ],
+                            recs: [
+                                { text: "Digital detox 1h before bed", icon: "📵" },
+                                { text: "Box breathing techniques", icon: "🌬️" }
+                            ]
+                        }
+                    ]
+                },
+                lifestyle: {
+                    title: "Lifestyle Analysis 🏠", sub: "Daily Balance",
+                    topScores: [
+                        { label: "Work-Life", icon: "⚖️", bg: "#b91c1c", val: clamp(Math.round(100 - (Math.abs(last.work_hours-8)*10)), 10, 100) },
+                        { label: "Energy", icon: "⚡", bg: "#ca8a04", val: clamp(Math.round((last.sleep_hours/8)*50 + (10-last.stress_level)*5), 10, 100) },
+                        { label: "Screen Time", icon: "📱", bg: "#4338ca", val: clamp(Math.round(100 - ((last.screen_time-4)*10)), 10, 100) },
+                        { label: "Steps", icon: "👟", bg: "#059669", val: clamp(Math.round((last.steps_walked/10000)*100), 10, 100) }
+                    ],
+                    cards: [
+                        {
+                            title: "Daily Rhythm", icon: "⏱️", bg: "#8b5cf6",
+                            score: clamp(Math.round(100 - (Math.abs(last.work_hours-8)*5) - ((last.screen_time-4)*2)), 10, 100), label: "Balance Score",
+                            points: [
+                                { t: "Work Hours", d: `You logged ${last.work_hours} hours of work. ${last.work_hours > 9 ? 'Overworking can lead to chronic burnout.' : 'You are maintaining a healthy work rhythm.'}` },
+                                { t: "Digital Fatigue", d: `With ${last.screen_time} hours of screen time, ${last.screen_time > 6 ? 'try to implement the 20-20-20 rule to reduce eye strain.' : 'your screen balance is healthy.'}` }
+                            ],
+                            recs: [
+                                { text: "Take micro-breaks every 90 mins", icon: "☕" },
+                                { text: "No screens 1h before bed", icon: "📵" }
+                            ]
+                        }
+                    ]
+                }
+            };
+
+            const config = configs[TYPE] || configs.lifestyle;
+
+            document.getElementById('pageTitle').innerText = config.title;
+            document.getElementById('baselineSub').innerText = "ML Routine Suggestion: " + config.sub;
+
+            document.getElementById('baselineScoresGrid').innerHTML = config.topScores.map(ts => {
+                const stat = getStatus(ts.val);
+                return `
+                <div class="baseline-score" style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                    <div style="font-size:0.75rem; color:#64748b; font-weight:600; text-transform:uppercase;">${ts.label} Score</div>
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <div style="width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; background:${ts.bg}; color:white;">${ts.icon}</div>
+                        <div style="font-size: 1.8rem; font-weight: 800; display: flex; align-items: baseline; gap: 4px; color:#f8fafc;">${ts.val} <span style="font-size: 0.9rem; font-weight: 600; color: #94a3b8;">/100</span></div>
+                    </div>
+                    <div style="font-size: 0.85rem; font-weight: 700; color:${stat.color};">${stat.text}</div>
+                </div>`;
+            }).join('');
+
+            const generateCircSVG = (score, color) => {
+                const circ = 2 * Math.PI * 65; 
+                const offset = circ - (score / 100) * circ;
+                return `
+                <svg viewBox="0 0 150 150" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform: rotate(-90deg);">
+                    <circle cx="75" cy="75" r="65" fill="none" stroke-width="12" stroke-linecap="round" stroke="rgba(255,255,255,0.05)" />
+                    <circle cx="75" cy="75" r="65" fill="none" stroke-width="12" stroke-linecap="round" stroke="${color}" stroke-dasharray="${circ}" stroke-dashoffset="${offset}" style="transition: stroke-dashoffset 1s ease;" />
+                </svg>`;
+            };
+
+            document.getElementById('insightCardsContainer').innerHTML = config.cards.map(c => {
+                const stat = getStatus(c.score);
+                return `
+                <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 32px; margin-bottom: 24px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                        <h3 style="margin: 0; display: flex; align-items: center; gap: 12px; font-size: 1.3rem; color:#f8fafc;">
+                            <div style="width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; background:${c.bg}; color:white;">${c.icon}</div>
+                            ${c.title}
+                        </h3>
+                        <div style="font-size: 0.8rem; padding: 4px 12px; border-radius: 16px; border: 1px solid; font-weight: 600; color:${stat.color}; border-color:${stat.color}; background:rgba(255,255,255,0.05);">${stat.text}</div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 200px 1fr 350px; gap: 40px; align-items: center;">
+                        <div style="position: relative; width: 150px; height: 150px; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+                            ${generateCircSVG(c.score, stat.color)}
+                            <div style="position:absolute; text-align:center; top:50%; transform:translateY(-50%);">
+                                <div style="font-size: 2.2rem; font-weight: 800; color: ${stat.color}; margin-bottom: 4px;">${c.score}%</div>
+                                <div style="font-size: 0.8rem; font-weight: 600; color: #94a3b8; text-align: center;">${c.label}</div>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 16px;">
+                            ${c.points.map(p => `
+                                <div style="display: flex; gap: 12px; align-items: flex-start;">
+                                    <div style="width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; background:${stat.color};"></div>
+                                    <div style="font-size: 0.95rem; line-height: 1.5; color: #cbd5e1;"><strong style="color: #f8fafc;">${p.t}:</strong> ${p.d}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <div style="background: rgba(0,0,0,0.2); border-radius: 16px; padding: 24px; height: 100%; box-sizing: border-box; border: 1px solid rgba(255,255,255,0.05);">
+                            <div style="display: flex; align-items: center; gap: 8px; font-weight: 700; color: #10b981; margin-bottom: 16px;">⭐ Top Recommendation</div>
+                            <div style="display: flex; flex-direction: column; gap: 12px;">
+                                ${c.recs.map(r => `
+                                    <div style="display: flex; align-items: center; gap: 12px; font-size: 0.9rem; color: #e2e8f0; font-weight: 500;">
+                                        <div style="width: 32px; height: 32px; background: rgba(255,255,255,0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center;">${r.icon}</div>
+                                        ${r.text}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+
+            // Fetch dynamic AI analysis
+            const aiContainer = document.getElementById('dynamicAiContainer');
+            if (aiContainer) {
+                const currentPrediction = JSON.parse(localStorage.getItem('currentPrediction') || '{}');
+                const reqBody = {
+                    userData: last,
+                    prediction: currentPrediction,
+                    type: TYPE,
+                    answers: {},
+                    language: localStorage.getItem('language') || 'en'
+                };
+                
+                try {
+                    const aiRes = await fetch('/analyze-detail', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(reqBody)
+                    });
+                    const aiData = await aiRes.json();
+                    
+                    if (aiRes.status === 403 || aiData.status === 'premium_required') {
+                        aiContainer.innerHTML = `
+                            <div style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.25); border-radius: 16px; padding: 28px; text-align: center;">
+                                <div style="font-size: 2.5rem; margin-bottom: 10px;">🔒</div>
+                                <h3 style="color: #fbbf24; margin: 0 0 8px 0; font-size: 1.3rem; font-weight: 800;">Deep Dive Analysis is Locked</h3>
+                                <p style="color: #cbd5e1; max-width: 560px; margin: 0 auto 20px; font-size: 0.95rem; line-height: 1.6;">
+                                    The first 50 registered users received complimentary Premium access! Standard users have full access to <strong>Simple Analysis</strong> and <strong>AI Insights</strong>.
+                                    <br><br>
+                                    To unlock Deep Dive Analysis, please send an email with your reason for usage request.
+                                </p>
+                                <a href="mailto:rastogi21yr@gmail.com?subject=WellnessIQ%20Premium%20Access%20Request&body=Hi%20Yash,%0D%0A%0D%0AI%20would%20like%20to%20request%20Premium%20Access%20for%20my%20WellnessIQ%20account.%0D%0A%0D%0AReason%20for%20usage%20request:%0D%0A" 
+                                   style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white; padding: 10px 24px; border-radius: 25px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);">
+                                    ✉️ Request Premium Access (rastogi21yr@gmail.com)
+                                </a>
+                            </div>
+                        `;
+                    } else if (aiData.ai_markdown) {
+                        aiContainer.innerHTML = marked.parse(aiData.ai_markdown);
+                    } else {
+                        aiContainer.innerHTML = '<p style="color:#ef4444;">Failed to load detailed AI analysis.</p>';
+                    }
+                } catch(err) {
+                    console.error(err);
+                    aiContainer.innerHTML = '<p style="color:#ef4444;">Error connecting to AI service.</p>';
+                }
+            }
+
+        } catch (e) {
+            console.error("Failed", e);
+        }
+    }
+
+    loadAnalysisData();
+})();
+</script>

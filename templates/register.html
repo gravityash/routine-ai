@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register - WellnessIQ</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+    body {
+        margin: 0; font-family: 'Outfit', sans-serif;
+        background-color: #0b1120;
+        color: #f8fafc;
+        min-height: 100vh;
+        display: flex; align-items: center; justify-content: center;
+        background-image: radial-gradient(circle at 50% -20%, #1e3a8a 0%, #0b1120 60%);
+    }
+    .auth-container {
+        background: rgba(30, 41, 59, 0.7);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        padding: 48px;
+        width: 100%; max-width: 400px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        text-align: center;
+    }
+    .logo {
+        font-size: 2rem; font-weight: 800; color: #f8fafc; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .logo span { color: #3b82f6; }
+    .subtitle { color: #94a3b8; margin-bottom: 32px; font-size: 1.05rem; }
+    
+    .input-group {
+        text-align: left; margin-bottom: 20px;
+    }
+    .input-group label {
+        display: block; font-size: 0.9rem; font-weight: 600; color: #cbd5e1; margin-bottom: 8px;
+    }
+    .input-group input {
+        width: 100%; padding: 14px 16px;
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        color: #f8fafc; font-family: 'Outfit', sans-serif; font-size: 1rem;
+        outline: none; transition: all 0.2s; box-sizing: border-box;
+    }
+    .input-group input:focus {
+        border-color: #3b82f6; background: rgba(0, 0, 0, 0.3); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+    
+    .btn-submit {
+        width: 100%; padding: 16px; border: none; border-radius: 12px;
+        background: linear-gradient(135deg, #0ea5e9, #3b82f6);
+        color: white; font-size: 1.1rem; font-weight: 700; cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s; margin-top: 10px;
+    }
+    .btn-submit:hover {
+        transform: translateY(-2px); box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+    }
+    
+    .flash-message {
+        background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2);
+        color: #ef4444; padding: 12px; border-radius: 12px; margin-bottom: 24px; font-weight: 600; font-size: 0.95rem;
+    }
+    
+    .auth-footer {
+        margin-top: 32px; color: #94a3b8; font-size: 0.95rem;
+    }
+    .auth-footer a {
+        color: #3b82f6; text-decoration: none; font-weight: 600; transition: color 0.2s;
+    }
+    .auth-footer a:hover { color: #60a5fa; }
+</style>
+</head>
+<body>
+
+    <div class="auth-container">
+        <div class="logo">
+            <svg fill="none" stroke="#0ea5e9" viewBox="0 0 24 24" style="width:32px;height:32px;stroke-width:2.5;"><path stroke-linecap="round" stroke-linejoin="round" d="M8 8a3 3 0 100-6 3 3 0 000 6zM16 8a3 3 0 100-6 3 3 0 000 6zM8 22a3 3 0 100-6 3 3 0 000 6zM16 22a3 3 0 100-6 3 3 0 000 6z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M8 11v4M16 11v4"></path></svg>
+            Wellness<span>IQ</span>
+        </div>
+        <p class="subtitle">Create your clinical profile</p>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flash-message">{{ messages[0] }}</div>
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="/register">
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Choose a username" required autocomplete="username">
+            </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Create a password" required autocomplete="new-password">
+            </div>
+            
+            <button type="submit" class="btn-submit">Sign Up</button>
+        </form>
+        
+        <div class="auth-footer">
+            Already have an account? <a href="/login">Log in here</a>
+        </div>
+        <div style="margin-top: 16px;">
+            <a href="/" style="color: #64748b; text-decoration: none; font-size: 0.85rem; font-weight: 500;">← Back to Home</a>
+        </div>
+    </div>
+
+</body>
+</html>

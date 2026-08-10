@@ -1,0 +1,125 @@
+<div class="header-row" style="margin-bottom: 32px;">
+    <div>
+        <h1 class="page-title" style="font-size: 2.2rem; font-weight: 800; color: #f8fafc; margin: 0 0 8px 0;">AI Insights</h1>
+        <p class="page-subtitle" style="color: #94a3b8; margin: 0; font-size: 1.05rem;">Root cause analysis and personalized recommendations</p>
+    </div>
+</div>
+
+<div class="grid" style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
+    
+    <div style="display: flex; flex-direction: column; gap: 24px;">
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 32px;">
+            <h3 style="margin: 0 0 20px 0; display: flex; align-items: center; gap: 12px; font-size: 1.3rem; color:#f8fafc;">
+                <div style="width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; background:#8b5cf6; color:white;">✨</div>
+                AI Master Summary
+            </h3>
+            <div id="aiSummaryBox" style="color: #cbd5e1; line-height: 1.6;">
+                <p>Generating personalized insights based on your recent activity...</p>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 24px;">
+                <h4 style="margin: 0 0 16px 0; color: #f8fafc; display: flex; align-items: center; gap: 8px;">🌙 Sleep Insights</h4>
+                <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 12px;" id="sleepInsightText">Analyzing sleep patterns...</p>
+                <div style="background: rgba(16,185,129,0.1); color: #10b981; padding: 12px; border-radius: 12px; font-size: 0.85rem; font-weight: 600;">
+                    Recommendation: Maintain consistent bedtime.
+                </div>
+            </div>
+            
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 24px;">
+                <h4 style="margin: 0 0 16px 0; color: #f8fafc; display: flex; align-items: center; gap: 8px;">🧠 Stress Insights</h4>
+                <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 12px;" id="stressInsightText">Evaluating cognitive load...</p>
+                <div style="background: rgba(245,158,11,0.1); color: #f59e0b; padding: 12px; border-radius: 12px; font-size: 0.85rem; font-weight: 600;">
+                    Recommendation: Add 5 mins box breathing.
+                </div>
+            </div>
+
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 24px;">
+                <h4 style="margin: 0 0 16px 0; color: #f8fafc; display: flex; align-items: center; gap: 8px;">🥗 Diet Insights</h4>
+                <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 12px;" id="dietInsightText">Reviewing metabolic markers...</p>
+                <div style="background: rgba(56,189,248,0.1); color: #38bdf8; padding: 12px; border-radius: 12px; font-size: 0.85rem; font-weight: 600;">
+                    Recommendation: Increase fiber intake.
+                </div>
+            </div>
+
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 24px;">
+                <h4 style="margin: 0 0 16px 0; color: #f8fafc; display: flex; align-items: center; gap: 8px;">⚡ Lifestyle Insights</h4>
+                <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 12px;" id="lifestyleInsightText">Checking daily balance...</p>
+                <div style="background: rgba(239,68,68,0.1); color: #ef4444; padding: 12px; border-radius: 12px; font-size: 0.85rem; font-weight: 600;">
+                    Recommendation: Reduce screen time by 1h.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 24px;">
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 24px;">
+            <h3 style="margin: 0 0 20px 0; color: #f8fafc;">⚠️ Health Risks Detected</h3>
+            <div id="riskContainer" style="display: flex; flex-direction: column; gap: 12px;">
+                <!-- JS populated -->
+            </div>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 24px;">
+            <h3 style="margin: 0 0 20px 0; color: #f8fafc;">📅 Weekly Observations</h3>
+            <ul style="color: #94a3b8; font-size: 0.95rem; line-height: 1.8; padding-left: 20px;" id="weeklyObs">
+                <li>Trend analysis pending...</li>
+            </ul>
+        </div>
+    </div>
+
+</div>
+
+<script>
+(function() {
+    async function loadAI() {
+        try {
+            const cachedAI = localStorage.getItem('lastAI_markdown');
+            if (cachedAI && cachedAI !== "undefined") {
+                document.getElementById('aiSummaryBox').innerHTML = marked.parse(cachedAI);
+            } else {
+                document.getElementById('aiSummaryBox').innerHTML = "<p>Submit your daily data in the Dashboard to generate a fresh AI wellness summary!</p>";
+            }
+
+            const res = await fetch('/api/history');
+            const data = await res.json();
+            const history = data.history || [];
+
+            if (history.length > 0) {
+                const last = history[history.length - 1];
+                
+                document.getElementById('sleepInsightText').innerText = `You slept ${last.sleep_hours} hours. ` + (last.sleep_hours < 7 ? "This is below the recommended 7-9 hours, affecting recovery." : "Good sleep duration promotes cognitive function.");
+                document.getElementById('stressInsightText').innerText = `Stress level is ${last.stress_level}/10. ` + (last.stress_level > 6 ? "High stress detected. This elevates cortisol levels." : "Optimal stress management.");
+                document.getElementById('dietInsightText').innerText = `Caloric intake: ${last.calories_intake} kcal. Protein: ${last.protein_intake}g.`;
+                document.getElementById('lifestyleInsightText').innerText = `Screen time: ${last.screen_time} hrs. Work: ${last.work_hours} hrs.`;
+
+                let risks = [];
+                if(last.sleep_hours < 6) risks.push({msg: "High Fatigue Risk", color: "#ef4444", icon:"⚠️"});
+                if(last.stress_level > 7) risks.push({msg: "Burnout Risk", color: "#ef4444", icon:"⚠️"});
+                if((last.screen_time || 0) > 8) risks.push({msg: "Digital Eye Strain Risk", color: "#f59e0b", icon:"👀"});
+                
+                if(risks.length === 0) risks.push({msg: "No immediate risks detected.", color: "#10b981", icon:"✅"});
+
+                document.getElementById('riskContainer').innerHTML = risks.map(r => `
+                    <div style="padding:12px 16px; border-radius:12px; background:${r.color}15; color:${r.color}; font-weight:600; display:flex; gap:12px; align-items:center; border: 1px solid ${r.color}30;">
+                        <span>${r.icon}</span> ${r.msg}
+                    </div>
+                `).join('');
+
+                if(history.length >= 7) {
+                    document.getElementById('weeklyObs').innerHTML = `
+                        <li>Consistent logging observed for the past 7 days.</li>
+                        <li>Average sleep: ${(history.slice(-7).reduce((acc, v) => acc + v.sleep_hours, 0) / 7).toFixed(1)} hrs/night.</li>
+                        <li>Average stress: ${(history.slice(-7).reduce((acc, v) => acc + v.stress_level, 0) / 7).toFixed(1)}/10.</li>
+                    `;
+                } else {
+                    document.getElementById('weeklyObs').innerHTML = `<li>Log data for 7 consecutive days to unlock weekly pattern recognition.</li>`;
+                }
+
+            }
+        } catch(e) { console.error(e); }
+    }
+    loadAI();
+})();
+</script>

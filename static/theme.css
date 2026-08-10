@@ -1,0 +1,211 @@
+/* Theme Styles for all pages */
+body {
+    transition: background 0.4s ease, color 0.4s ease;
+}
+html.dark-mode body {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #022c22 100%);
+    background-size: 200% 200%;
+    color: #f8fafc;
+}
+html.dark-mode body .card {
+    background: rgba(30, 41, 59, 0.7);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+html.dark-mode body .card h3, html.dark-mode body h2, html.dark-mode body h1 {
+    color: #f8fafc;
+}
+html.dark-mode body .header p,
+html.dark-mode body label,
+html.dark-mode body .markdown-body,
+html.dark-mode body .modal-close {
+    color: #94a3b8;
+}
+html.dark-mode body input, html.dark-mode body select {
+    background: rgba(15, 23, 42, 0.9);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #f8fafc;
+}
+html.dark-mode body .plan-list li {
+    background: rgba(255, 255, 255, 0.05);
+}
+html.dark-mode body .markdown-body h1, html.dark-mode body .markdown-body h2, html.dark-mode body .markdown-body strong {
+    color: #f8fafc;
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+html.dark-mode body .modal {
+    background: #1e293b;
+}
+html.dark-mode body .modal-overlay {
+    background: rgba(0, 0, 0, 0.6);
+}
+
+/* Download button */
+.download-btn {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+    border: 1px solid #3b82f6;
+    margin-top: 15px;
+}
+html.dark-mode body .download-btn {
+    background: rgba(59, 130, 246, 0.2);
+}
+
+html.dark-mode body table {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    color: #f8fafc;
+}
+html.dark-mode body th, html.dark-mode body td {
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+    color: #f8fafc;
+}
+html.dark-mode body th {
+    background-color: rgba(59, 130, 246, 0.2);
+    color: #f8fafc;
+}
+
+.navbar.scrolled {
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+
+html.dark-mode body .glass {
+    background: rgba(30, 41, 59, 0.7);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+html.dark-mode body .logo {
+    color: #f8fafc;
+}
+html.dark-mode body footer {
+    background: rgba(30, 41, 59, 0.5);
+    border-top-color: rgba(255, 255, 255, 0.1);
+}
+html.dark-mode body .text-gray,
+html.dark-mode body .feature-card p,
+html.dark-mode body .step-content p,
+html.dark-mode body .hero p,
+html.dark-mode body .content-card p,
+html.dark-mode body .team-member p,
+html.dark-mode body .team-member ul,
+html.dark-mode body .stat-card p,
+html.dark-mode body footer p, 
+html.dark-mode body footer a,
+html.dark-mode body .footer-bottom,
+html.dark-mode body .stat-box .title {
+    color: #94a3b8;
+}
+html.dark-mode body .stat-box {
+    background: rgba(30, 41, 59, 0.7);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+html.dark-mode body .navbar.scrolled {
+    background: rgba(15, 23, 42, 0.9);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+html.dark-mode body .nav-links a {
+    color: #cbd5e1;
+}
+
+/* Toggle Button Position */
+.theme-toggle-btn {
+    background: none; border: none; padding: 8px; box-shadow: none;
+    cursor: pointer; font-size: 1.5rem; margin: 0; width: auto;
+    position: absolute; top: 20px; right: 20px;
+}
+/* If inside header */
+.header .theme-toggle-btn {
+    position: static;
+}
+
+/* ==========================================
+   UNIVERSAL RESPONSIVE BREAKPOINTS (Mobile, Tablet, Desktop)
+   ========================================== */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+img, video, canvas {
+    max-width: 100%;
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 1rem;
+}
+
+/* Tablet Breakpoint (<= 1024px) */
+@media (max-width: 1024px) {
+    .metrics-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 16px !important;
+    }
+
+    .grid, .card-grid, .two-col, .form-grid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 16px !important;
+    }
+
+    .top-header, .header-row {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 16px !important;
+    }
+
+    .header-actions {
+        width: 100% !important;
+        justify-content: flex-start !important;
+        flex-wrap: wrap !important;
+    }
+}
+
+/* Phone Breakpoint (<= 640px) */
+@media (max-width: 640px) {
+    h1, .welcome-title {
+        font-size: 1.6rem !important;
+        line-height: 1.3 !important;
+    }
+
+    h2 {
+        font-size: 1.3rem !important;
+    }
+
+    h3 {
+        font-size: 1.1rem !important;
+    }
+
+    .metrics-grid {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+    }
+
+    .grid, .card-grid, .two-col, .form-grid, .lang-cards-grid {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+    }
+
+    .metric-card, .card, .chart-card, .ai-card, .analysis-main-card {
+        padding: 16px !important;
+        border-radius: 16px !important;
+    }
+
+    .modal-content {
+        padding: 20px 16px !important;
+        width: 95% !important;
+        max-height: 92vh !important;
+        border-radius: 18px !important;
+    }
+
+    .btn-primary, .speech-btn, .download-btn {
+        width: 100% !important;
+        justify-content: center !important;
+        box-sizing: border-box !important;
+    }
+
+    .analysis-header-bar {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 12px !important;
+    }
+}

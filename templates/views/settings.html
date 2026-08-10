@@ -1,0 +1,74 @@
+<div class="header-row" style="margin-bottom: 32px; display: flex; justify-content: space-between; align-items: flex-end;">
+    <div>
+        <h1 class="page-title" style="font-size: 2.2rem; font-weight: 800; color: #f8fafc; margin: 0 0 8px 0;">Account Settings</h1>
+        <p class="page-subtitle" style="color: #94a3b8; margin: 0; font-size: 1.05rem;">Manage your profile, preferences, and security</p>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr; gap: 24px; max-width: 800px;">
+    
+    <!-- Profile Info -->
+    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 32px;">
+        <h3 style="color: #f8fafc; margin: 0 0 24px 0; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px;">Personal Information</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+            <div>
+                <label style="color: #cbd5e1; font-weight: 600; font-size: 0.9rem; margin-bottom: 8px; display: block;">Username</label>
+                <div style="padding: 12px; background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); color: #94a3b8;">
+                    {{ session.get('username') }}
+                </div>
+            </div>
+            <div>
+                <label style="color: #cbd5e1; font-weight: 600; font-size: 0.9rem; margin-bottom: 8px; display: block;">Role</label>
+                <div style="padding: 12px; background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); color: #94a3b8; text-transform: capitalize;">
+                    {{ session.get('role', 'user') }}
+                </div>
+            </div>
+        </div>
+        <div style="margin-top: 24px; display: flex; gap: 16px;">
+            <a href="/onboarding" class="spa-link" data-route="/onboarding" style="display: inline-block; background: rgba(255,255,255,0.1); color: #f8fafc; padding: 10px 20px; border-radius: 12px; text-decoration: none; font-weight: 600; font-size: 0.9rem;">
+                Edit Onboarding Profile
+            </a>
+            <a href="/logout" style="display: inline-block; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: #ef4444; padding: 10px 20px; border-radius: 12px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: background 0.2s;">
+                Logout
+            </a>
+        </div>
+    </div>
+
+    <!-- Preferences -->
+    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 32px;">
+        <h3 style="color: #f8fafc; margin: 0 0 24px 0; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px;">App Preferences</h3>
+        
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <div>
+                <div style="color: #f8fafc; font-weight: 600; margin-bottom: 4px;">Theme Theme</div>
+                <div style="color: #94a3b8; font-size: 0.85rem;">Toggle between dark and light appearance.</div>
+            </div>
+            <button onclick="toggleTheme()" style="background: rgba(255,255,255,0.1); border: none; padding: 8px 16px; border-radius: 12px; color: #f8fafc; cursor: pointer; font-weight: 600;">
+                Toggle Theme
+            </button>
+        </div>
+
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 16px 0;">
+            <div>
+                <div style="color: #f8fafc; font-weight: 600; margin-bottom: 4px;">Daily Reminders</div>
+                <div style="color: #94a3b8; font-size: 0.85rem;">Receive browser notifications to log your daily health metrics.</div>
+            </div>
+            <label style="position: relative; display: inline-block; width: 50px; height: 26px;">
+                <input type="checkbox" checked style="opacity: 0; width: 0; height: 0;" onchange="alert('Notification settings updated locally.')">
+                <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #0ea5e9; transition: .4s; border-radius: 34px;">
+                    <span style="position: absolute; content: ''; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; transform: translateX(24px);"></span>
+                </span>
+            </label>
+        </div>
+    </div>
+
+    <!-- Danger Zone -->
+    <div style="background: rgba(239,68,68,0.05); border: 1px solid rgba(239,68,68,0.2); border-radius: 20px; padding: 32px;">
+        <h3 style="color: #ef4444; margin: 0 0 24px 0; border-bottom: 1px solid rgba(239,68,68,0.2); padding-bottom: 12px;">Danger Zone</h3>
+        <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 16px;">Once you delete your account, there is no going back. Please be certain.</p>
+        <button onclick="if(confirm('Are you absolutely sure? This cannot be undone.')) { alert('Account deletion requested. Please contact support.'); }" style="background: #ef4444; color: white; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 700; cursor: pointer;">
+            Delete Account
+        </button>
+    </div>
+
+</div>
