@@ -1,41 +1,262 @@
-<div class="header-row" style="margin-bottom: 32px; display: flex; justify-content: space-between; align-items: flex-end;">
+<style>
+@media (max-width: 768px) {
+    .reports-card-grid { grid-template-columns: 1fr !important; }
+}
+</style>
+
+<div class="header-row" style="margin-bottom: 28px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px;">
     <div>
-        <h1 class="page-title" style="font-size: 2.2rem; font-weight: 800; color: #f8fafc; margin: 0 0 8px 0;">Reports & Exports</h1>
-        <p class="page-subtitle" style="color: #94a3b8; margin: 0; font-size: 1.05rem;">Generate, view, and download your health data</p>
+        <h1 class="page-title" style="font-size: 2.2rem; font-weight: 800; color: #f8fafc; margin: 0 0 8px 0;">Health Reports & AI Audit 📊</h1>
+        <p class="page-subtitle" style="color: #94a3b8; margin: 0; font-size: 1.05rem;">Complete AI evaluation of your daily health habits, achievements, and action plan</p>
+    </div>
+    <div style="display: flex; gap: 12px; flex-wrap: wrap; width: 100%; max-width: 400px;" class="header-actions">
+        <button onclick="downloadElementAsReport('AI Health Audit Report', 'aiReportMainContainer', 'wellnessiq_health_report.txt')" 
+                class="btn-mobile-block"
+                style="background: linear-gradient(135deg, #0ea5e9, #3b82f6); color: white; border: none; padding: 12px 20px; border-radius: 12px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);">
+            📥 Download Full AI Report
+        </button>
+        <button onclick="window.print()" 
+                class="btn-mobile-block"
+                style="background: rgba(255,255,255,0.08); color: #f8fafc; border: 1px solid rgba(255,255,255,0.15); padding: 12px 18px; border-radius: 12px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+            🖨️ Print / Save PDF
+        </button>
     </div>
 </div>
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px;">
-    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 32px;">
-        <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(16,185,129,0.1); color: #10b981; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 16px;">
+
+<!-- AI REPORT CONTAINER (TARGET FOR DOWNLOAD) -->
+<div id="aiReportMainContainer" style="display: flex; flex-direction: column; gap: 24px;">
+
+    <!-- TOP SUMMARY BANNER -->
+    <div style="background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9)); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 24px 32px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+        <div>
+            <div style="font-size: 0.85rem; color: #38bdf8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">AI Health Status</div>
+            <h2 id="reportOverallScoreTitle" style="margin: 0; color: #f8fafc; font-size: 1.6rem; font-weight: 800;">Evaluating Health Metrics...</h2>
+        </div>
+        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+            <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); padding: 10px 18px; border-radius: 14px; text-align: center;">
+                <div style="font-size: 0.75rem; color: #10b981; font-weight: 700; text-transform: uppercase;">Doing Right</div>
+                <div id="countRight" style="font-size: 1.4rem; font-weight: 800; color: #f8fafc;">0 Habits</div>
+            </div>
+            <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); padding: 10px 18px; border-radius: 14px; text-align: center;">
+                <div style="font-size: 0.75rem; color: #ef4444; font-weight: 700; text-transform: uppercase;">Needs Fix</div>
+                <div id="countWrong" style="font-size: 1.4rem; font-weight: 800; color: #f8fafc;">0 Areas</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TWO COLUMN GRID FOR RIGHT VS WRONG -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;" class="card-grid reports-card-grid">
+
+        
+        <!-- CARD 1: WHAT YOU ARE DOING RIGHT -->
+        <div style="background: rgba(16, 185, 129, 0.04); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 20px; padding: 28px;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+                <div style="width: 42px; height: 42px; border-radius: 12px; background: rgba(16, 185, 129, 0.15); color: #10b981; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
+                    🎯
+                </div>
+                <div>
+                    <h3 style="margin: 0; color: #f8fafc; font-size: 1.25rem; font-weight: 700;">What You Are Doing Right</h3>
+                    <p style="margin: 2px 0 0 0; color: #94a3b8; font-size: 0.85rem;">Positive health habits validated by AI</p>
+                </div>
+            </div>
+            
+            <div id="doingRightContainer" style="display: flex; flex-direction: column; gap: 14px;">
+                <div style="color: #94a3b8; font-style: italic;">Analyzing health log data...</div>
+            </div>
+        </div>
+
+        <!-- CARD 2: WHAT YOU ARE DOING WRONG / NEEDS IMPROVEMENT -->
+        <div style="background: rgba(239, 68, 68, 0.04); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 20px; padding: 28px;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+                <div style="width: 42px; height: 42px; border-radius: 12px; background: rgba(239, 68, 68, 0.15); color: #ef4444; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
+                    ⚠️
+                </div>
+                <div>
+                    <h3 style="margin: 0; color: #f8fafc; font-size: 1.25rem; font-weight: 700;">What Needs Improvement</h3>
+                    <p style="margin: 2px 0 0 0; color: #94a3b8; font-size: 0.85rem;">Areas negatively affecting your well-being</p>
+                </div>
+            </div>
+            
+            <div id="doingWrongContainer" style="display: flex; flex-direction: column; gap: 14px;">
+                <div style="color: #94a3b8; font-style: italic;">Analyzing health log data...</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- CARD 3: WHAT YOU HAVE TO DO (ACTION PROTOCOL) -->
+    <div style="background: rgba(59, 130, 246, 0.04); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 20px; padding: 32px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 42px; height: 42px; border-radius: 12px; background: rgba(59, 130, 246, 0.15); color: #3b82f6; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
+                    📋
+                </div>
+                <div>
+                    <h3 style="margin: 0; color: #f8fafc; font-size: 1.25rem; font-weight: 700;">What You Have To Do (AI Daily Protocol)</h3>
+                    <p style="margin: 2px 0 0 0; color: #94a3b8; font-size: 0.85rem;">Actionable step-by-step routine tailored for optimal recovery & performance</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="actionPlanContainer" class="markdown-body" style="color: #cbd5e1; line-height: 1.6;">
+            <div style="color: #94a3b8; font-style: italic;">Generating personalized action protocol...</div>
+        </div>
+    </div>
+
+</div>
+
+<!-- DATA EXPORT OPTIONS -->
+<div style="margin-top: 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px;" class="card-grid">
+    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 28px;">
+        <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(16,185,129,0.1); color: #10b981; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 16px;">
             📊
         </div>
-        <h3 style="color: #f8fafc; font-size: 1.3rem; margin: 0 0 8px 0;">Full Data Export</h3>
-        <p style="color: #94a3b8; font-size: 0.95rem; margin: 0 0 24px 0; line-height: 1.5;">Download all your logged health data, including sleep, stress, activity, and dietary metrics in CSV format for personal record-keeping.</p>
-        <button onclick="downloadCSV()" style="background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); color: #10b981; padding: 12px 24px; border-radius: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s;">
-            Download CSV
+        <h3 style="color: #f8fafc; font-size: 1.2rem; margin: 0 0 8px 0;">Full Log Data Export (CSV)</h3>
+        <p style="color: #94a3b8; font-size: 0.9rem; margin: 0 0 20px 0; line-height: 1.5;">Export your complete numerical health logs (sleep, steps, stress, water, calories) as a CSV file for Excel or medical records.</p>
+        <button onclick="downloadCSV()" style="background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3); color: #10b981; padding: 10px 20px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: all 0.2s;">
+            📥 Download CSV
         </button>
     </div>
 
-    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 32px;">
-        <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(59,130,246,0.1); color: #3b82f6; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 16px;">
+    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 28px;">
+        <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(59,130,246,0.1); color: #3b82f6; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 16px;">
             📄
         </div>
-        <h3 style="color: #f8fafc; font-size: 1.3rem; margin: 0 0 8px 0;">AI Health Summary (PDF)</h3>
-        <p style="color: #94a3b8; font-size: 0.95rem; margin: 0 0 24px 0; line-height: 1.5;">Generate a comprehensive clinical AI report detailing your trends, insights, and actionable advice to share with professionals.</p>
-        <button onclick="alert('PDF Generation coming soon!')" style="background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.3); color: #3b82f6; padding: 12px 24px; border-radius: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s;">
-            Generate PDF
+        <h3 style="color: #f8fafc; font-size: 1.2rem; margin: 0 0 8px 0;">AI Audit Report (.txt)</h3>
+        <p style="color: #94a3b8; font-size: 0.9rem; margin: 0 0 20px 0; line-height: 1.5;">Download this full AI Audit Report including what you are doing right, areas needing improvement, and your action steps.</p>
+        <button onclick="downloadElementAsReport('AI Health Audit Report', 'aiReportMainContainer', 'wellnessiq_health_report.txt')" style="background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.3); color: #3b82f6; padding: 10px 20px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: all 0.2s;">
+            📥 Download Report
         </button>
     </div>
-</div>
-
-<div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 32px;">
-    <h3 style="color: #f8fafc; margin: 0 0 24px 0;">Recent Generated Reports</h3>
-    <div style="color: #64748b; font-style: italic;">No reports have been generated yet.</div>
 </div>
 
 <script>
 (function() {
+    async function renderReportView() {
+        try {
+            const res = await fetch('/api/history');
+            const data = await res.json();
+            const history = data.history || [];
+
+            if (history.length === 0) {
+                document.getElementById('reportOverallScoreTitle').innerText = "No Log Data Available";
+                document.getElementById('doingRightContainer').innerHTML = "<div style='color:#94a3b8;'>Please log daily data in Dashboard to generate your report.</div>";
+                document.getElementById('doingWrongContainer').innerHTML = "<div style='color:#94a3b8;'>Please log daily data in Dashboard to generate your report.</div>";
+                document.getElementById('actionPlanContainer').innerHTML = "<div style='color:#94a3b8;'>Please log daily data in Dashboard.</div>";
+                return;
+            }
+
+            const last = history[history.length - 1];
+
+            // Evaluate Rights & Wrongs
+            const rights = [];
+            const wrongs = [];
+            const todo = [];
+
+            // 1. Sleep
+            if (last.sleep_hours >= 7 && last.sleep_hours <= 9) {
+                rights.push({ title: "Optimal Sleep Duration", desc: `Logging ${last.sleep_hours}h sleep provides essential cellular repair and cognitive rest.` });
+            } else if (last.sleep_hours < 7) {
+                wrongs.push({ title: "Inadequate Sleep", desc: `Logging ${last.sleep_hours}h sleep (<7h target). Sleep debt impairs metabolic health and recovery.` });
+                todo.push("🌙 **Sleep Hygiene**: Set a strict bedtime to get 7-9 hours of sleep.");
+            } else {
+                wrongs.push({ title: "Oversleeping Detected", desc: `Logging ${last.sleep_hours}h sleep (>9h). Excessive sleep can trigger lethargy.` });
+            }
+
+            // 2. Stress
+            if (last.stress_level <= 4) {
+                rights.push({ title: "Low Stress Management", desc: `Stress index at ${last.stress_level}/10 is optimal for low cortisol levels.` });
+            } else if (last.stress_level >= 7) {
+                wrongs.push({ title: "High Stress & Cortisol Risk", desc: `Stress level at ${last.stress_level}/10 increases burnout, inflammation, and anxiety.` });
+                todo.push("🧘 **Mindfulness Protocol**: Practice 10-15 mins of box breathing or meditation daily.");
+            } else {
+                rights.push({ title: "Moderate Stress Balance", desc: `Stress level at ${last.stress_level}/10 is within manageable boundaries.` });
+            }
+
+            // 3. Hydration
+            if (last.water_intake >= 2.5) {
+                rights.push({ title: "Excellent Hydration", desc: `Consuming ${last.water_intake}L water daily supports kidney function and skin barrier.` });
+            } else {
+                wrongs.push({ title: "Dehydration Risk", desc: `Water intake at ${last.water_intake}L (<2.5L goal) slows metabolic output and skin repair.` });
+                todo.push("💧 **Hydration Target**: Increase daily water intake to at least 2.5L to 3L.");
+            }
+
+            // 4. Physical Activity & Steps
+            if (last.steps_walked >= 8000) {
+                rights.push({ title: "High Daily Movement", desc: `${Math.round(last.steps_walked).toLocaleString()} steps daily maintains cardiovascular health.` });
+            } else if (last.steps_walked < 5000) {
+                wrongs.push({ title: "Sedentary Activity Level", desc: `Only ${Math.round(last.steps_walked).toLocaleString()} steps logged (<5,000 steps target).` });
+                todo.push("👟 **Daily Walk Goal**: Aim for at least 8,000 to 10,000 steps daily.");
+            } else {
+                rights.push({ title: "Moderate Activity", desc: `${Math.round(last.steps_walked).toLocaleString()} steps logged daily.` });
+            }
+
+            // 5. Exercise
+            if (last.exercise_minutes >= 30) {
+                rights.push({ title: "Active Exercise Habit", desc: `${last.exercise_minutes} mins exercise logged per session.` });
+            } else {
+                wrongs.push({ title: "Low Exercise Window", desc: `Only ${last.exercise_minutes} mins exercise logged (<30 mins target).` });
+                todo.push("⚡ **Exercise Window**: Dedicate 30 mins to moderate cardio or resistance training.");
+            }
+
+            // 6. Protein & Calories
+            if (last.protein_intake >= 60) {
+                rights.push({ title: "Healthy Protein Base", desc: `${last.protein_intake}g protein supports muscle synthesis and cellular maintenance.` });
+            } else {
+                wrongs.push({ title: "Low Protein Intake", desc: `${last.protein_intake}g protein (<60g target) hampers muscle recovery.` });
+                todo.push("🥩 **Nutrition Boost**: Incorporate protein-rich foods (eggs, chicken, lentils, tofu).");
+            }
+
+            // Update Counts
+            document.getElementById('countRight').innerText = `${rights.length} Habits`;
+            document.getElementById('countWrong').innerText = `${wrongs.length} Areas`;
+
+            // Calculate Overall Score Title
+            const scorePct = Math.round((rights.length / (rights.length + wrongs.length)) * 100) || 75;
+            document.getElementById('reportOverallScoreTitle').innerHTML = `Overall Wellness Alignment: <span style="color:#10b981;">${scorePct}%</span>`;
+
+            // Render Right Items
+            document.getElementById('doingRightContainer').innerHTML = rights.map(r => `
+                <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(16, 185, 129, 0.15); border-radius: 12px; padding: 14px; display: flex; gap: 12px; align-items: flex-start;">
+                    <div style="color: #10b981; font-weight: bold; font-size: 1.1rem; margin-top: 2px;">✓</div>
+                    <div>
+                        <div style="font-weight: 700; color: #f8fafc; font-size: 0.95rem;">${r.title}</div>
+                        <div style="font-size: 0.85rem; color: #cbd5e1; margin-top: 2px;">${r.desc}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Render Wrong Items
+            document.getElementById('doingWrongContainer').innerHTML = wrongs.length > 0 ? wrongs.map(w => `
+                <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(239, 68, 68, 0.15); border-radius: 12px; padding: 14px; display: flex; gap: 12px; align-items: flex-start;">
+                    <div style="color: #ef4444; font-weight: bold; font-size: 1.1rem; margin-top: 2px;">✕</div>
+                    <div>
+                        <div style="font-weight: 700; color: #f8fafc; font-size: 0.95rem;">${w.title}</div>
+                        <div style="font-size: 0.85rem; color: #cbd5e1; margin-top: 2px;">${w.desc}</div>
+                    </div>
+                </div>
+            `).join('') : "<div style='color:#10b981; font-weight:600;'>Great job! No major risk areas detected in your current log.</div>";
+
+            // Render Action Plan
+            const cachedAI = localStorage.getItem('lastAI_markdown');
+            let planHTML = "";
+            if (todo.length > 0) {
+                planHTML += "#### Priority Daily Fixes:\n" + todo.map(t => `- ${t}`).join('\n') + "\n\n";
+            }
+            if (cachedAI && cachedAI !== "undefined") {
+                planHTML += "#### Full AI Routine Protocol:\n" + cachedAI;
+            } else {
+                planHTML += "#### Routine Guidelines:\n- **Morning**: 500ml water immediately upon waking. 15-min sunlight walk.\n- **Midday**: Maintain protein intake and take micro-breaks every 90 mins.\n- **Evening**: No screen time 1 hour before bedtime. Ensure 7-9 hours sleep.";
+            }
+
+            document.getElementById('actionPlanContainer').innerHTML = typeof marked !== 'undefined' ? marked.parse(planHTML) : planHTML;
+
+        } catch (e) {
+            console.error("Failed to render report", e);
+        }
+    }
+
     async function downloadCSV() {
         try {
             const res = await fetch('/api/history');
@@ -54,7 +275,7 @@
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "wellnessiq_data.csv");
+            link.setAttribute("download", "wellnessiq_health_data.csv");
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -64,6 +285,8 @@
             alert('Failed to export data.');
         }
     }
+
     window.downloadCSV = downloadCSV;
+    renderReportView();
 })();
 </script>

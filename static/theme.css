@@ -1,6 +1,8 @@
 /* Theme Styles for all pages */
 body {
     transition: background 0.4s ease, color 0.4s ease;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
 }
 html.dark-mode body {
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #022c22 100%);
@@ -45,6 +47,19 @@ html.dark-mode body .modal-overlay {
     color: #3b82f6;
     border: 1px solid #3b82f6;
     margin-top: 15px;
+    min-height: 48px;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+.download-btn:hover {
+    background: rgba(59, 130, 246, 0.25);
 }
 html.dark-mode body .download-btn {
     background: rgba(59, 130, 246, 0.2);
@@ -110,10 +125,134 @@ html.dark-mode body .nav-links a {
     background: none; border: none; padding: 8px; box-shadow: none;
     cursor: pointer; font-size: 1.5rem; margin: 0; width: auto;
     position: absolute; top: 20px; right: 20px;
+    min-width: 44px; min-height: 44px;
+    display: inline-flex; align-items: center; justify-content: center;
 }
 /* If inside header */
 .header .theme-toggle-btn {
     position: static;
+}
+
+/* ==========================================
+   TOUCH-FIRST BUTTON & FORM CONTROL STANDARDS
+   ========================================== */
+
+/* Universal Touch Targets: minimum 48px height */
+button, input, select, textarea, .btn, .btn-primary, .btn-secondary, .btn-outline, .btn-danger {
+    min-height: 48px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+/* Touch-optimized Input & Select Controls */
+input, select, textarea {
+    font-size: 16px !important; /* Prevents auto-zoom on iOS */
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(15, 23, 42, 0.7);
+    color: #f8fafc;
+    width: 100%;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+}
+
+select {
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 18px;
+    padding-right: 42px;
+}
+
+/* Button Classes & Visual Hierarchy */
+.btn-primary {
+    background: linear-gradient(135deg, #0ea5e9, #3b82f6);
+    color: #ffffff;
+    font-weight: 700;
+    border: none;
+    border-radius: 14px;
+    padding: 12px 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+    text-decoration: none;
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(14, 165, 233, 0.45);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.08);
+    color: #f8fafc;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 14px;
+    padding: 12px 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+    text-decoration: none;
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.btn-danger {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    font-weight: 700;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 14px;
+    padding: 12px 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-danger:hover {
+    background: rgba(239, 68, 68, 0.3);
+}
+
+/* Container-based Clickable Option Cards */
+.touch-option-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-height: 52px;
+}
+
+.touch-option-card:hover, .touch-option-card.selected {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: #3b82f6;
 }
 
 /* ==========================================
@@ -133,6 +272,15 @@ img, video, canvas {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     margin-bottom: 1rem;
+    border-radius: 14px;
+}
+
+.table-responsive::-webkit-scrollbar {
+    height: 6px;
+}
+.table-responsive::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
 }
 
 /* Tablet Breakpoint (<= 1024px) */
@@ -162,13 +310,13 @@ img, video, canvas {
 
 /* Phone Breakpoint (<= 640px) */
 @media (max-width: 640px) {
-    h1, .welcome-title {
-        font-size: 1.6rem !important;
+    h1, .welcome-title, .page-title {
+        font-size: 1.5rem !important;
         line-height: 1.3 !important;
     }
 
     h2 {
-        font-size: 1.3rem !important;
+        font-size: 1.25rem !important;
     }
 
     h3 {
@@ -186,7 +334,7 @@ img, video, canvas {
     }
 
     .metric-card, .card, .chart-card, .ai-card, .analysis-main-card {
-        padding: 16px !important;
+        padding: 18px 16px !important;
         border-radius: 16px !important;
     }
 
@@ -197,10 +345,11 @@ img, video, canvas {
         border-radius: 18px !important;
     }
 
-    .btn-primary, .speech-btn, .download-btn {
+    .btn-primary, .btn-secondary, .btn-danger, .btn-outline, .speech-btn, .download-btn, .btn-mobile-full, .btn-mobile-block {
         width: 100% !important;
         justify-content: center !important;
         box-sizing: border-box !important;
+        display: flex !important;
     }
 
     .analysis-header-bar {
@@ -208,4 +357,177 @@ img, video, canvas {
         align-items: flex-start !important;
         gap: 12px !important;
     }
+
+    .mobile-feature-card {
+        margin-bottom: 12px;
+    }
 }
+
+/* Extra Small Phones (320px - 390px) */
+@media (max-width: 390px) {
+    body {
+        font-size: 14px;
+    }
+    .metric-value {
+        font-size: 1.5rem !important;
+    }
+    .top-bar {
+        padding: 10px 10px !important;
+    }
+    .card {
+        padding: 14px !important;
+    }
+}
+
+/* ==========================================
+   MARKDOWN & RESPONSIVE COMPONENT FIXES
+   ========================================== */
+.markdown-body {
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+.markdown-body table {
+    width: 100%;
+    max-width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 20px 0;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    display: table !important;
+}
+
+.markdown-body th {
+    background: rgba(30, 58, 138, 0.45);
+    color: #f8fafc;
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 14px 18px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    white-space: nowrap;
+}
+
+.markdown-body td {
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    color: #cbd5e1;
+    font-size: 0.92rem;
+    line-height: 1.6;
+    white-space: normal !important;
+    word-break: break-word;
+    vertical-align: top;
+}
+
+.markdown-body tr:last-child td {
+    border-bottom: none;
+}
+
+.markdown-body tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.markdown-body ul, .markdown-body ol {
+    padding-left: 20px;
+    margin: 12px 0;
+}
+
+.markdown-body li {
+    margin-bottom: 6px;
+}
+
+.analysis-grid-inner {
+    display: grid;
+    grid-template-columns: 180px 1fr 320px;
+    gap: 32px;
+    align-items: center;
+}
+
+@media (max-width: 992px) {
+    .analysis-grid-inner {
+        grid-template-columns: 1fr !important;
+        gap: 24px !important;
+    }
+    .baseline-card {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 20px !important;
+    }
+    .baseline-title {
+        border-right: none !important;
+        border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+        padding-right: 0 !important;
+        padding-bottom: 16px !important;
+        width: 100% !important;
+    }
+    #baselineScoresGrid {
+        flex-wrap: wrap !important;
+        gap: 20px !important;
+        width: 100% !important;
+        justify-content: space-between !important;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        font-size: 15px;
+    }
+    h1, .page-title {
+        font-size: 1.6rem !important;
+    }
+    h2 {
+        font-size: 1.3rem !important;
+    }
+    h3, .card-title {
+        font-size: 1.15rem !important;
+    }
+    .modal-content {
+        padding: 24px 18px !important;
+        width: 95% !important;
+        border-radius: 20px !important;
+    }
+    .form-grid {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .top-bar .profile-pill span {
+        display: none !important;
+    }
+    .top-bar {
+        padding: 10px 14px !important;
+        gap: 8px !important;
+    }
+    .top-bar select {
+        padding: 4px 8px !important;
+        min-height: 36px !important;
+        font-size: 0.85rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .top-bar {
+        padding: 10px 12px !important;
+        gap: 6px !important;
+    }
+    .metric-value {
+        font-size: 1.6rem !important;
+    }
+    #baselineScoresGrid {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 12px !important;
+    }
+}
+
+canvas {
+    max-width: 100% !important;
+}
+
+
+

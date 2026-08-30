@@ -1,60 +1,271 @@
 <style>
-/* Dashboard Specific Styles */
-.metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 24px; min-width: 0; }
-.metric-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 24px; border-radius: 20px; min-width: 0; }
-.metric-header { display: flex; justify-content: space-between; color: #94a3b8; font-size: 0.9rem; font-weight: 600; margin-bottom: 12px; }
-.metric-value { font-size: 2rem; font-weight: 800; color: #f8fafc; margin-bottom: 4px; }
-.metric-sub { font-size: 0.85rem; color: #64748b; font-weight: 500; }
+/* Modern Dashboard Styles */
+.metrics-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+    gap: 24px; 
+    margin-bottom: 32px; 
+    min-width: 0; 
+}
 
-.middle-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 24px; min-width: 0; align-items: start; }
-.bottom-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-bottom: 24px; min-width: 0; align-items: start; }
-.chart-card, .ai-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 24px; border-radius: 20px; min-width: 0; overflow: hidden; box-sizing: border-box; }
-.card-title { display: flex; justify-content: space-between; align-items: center; font-size: 1.1rem; color: #f8fafc; margin: 0 0 20px 0; }
+.metric-card { 
+    background: rgba(30, 41, 59, 0.55); 
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08); 
+    padding: 26px 28px; 
+    border-radius: 24px; 
+    min-width: 0; 
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.25);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+}
 
-.ai-content { max-height: 240px; overflow-y: auto; padding-right: 6px; }
+.metric-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(59, 130, 246, 0.35);
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.4);
+}
+
+.metric-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    color: #94a3b8; 
+    font-size: 1rem; 
+    font-weight: 700; 
+    margin-bottom: 14px; 
+}
+
+.metric-header span:last-child {
+    font-size: 1.3rem;
+}
+
+.metric-value { 
+    font-size: 2.4rem; 
+    font-weight: 800; 
+    color: #f8fafc; 
+    margin-bottom: 6px; 
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+}
+
+.metric-sub { 
+    font-size: 0.95rem; 
+    color: #64748b; 
+    font-weight: 600; 
+}
+
+.middle-grid { 
+    display: grid; 
+    grid-template-columns: 1.35fr 1fr; 
+    gap: 28px; 
+    margin-bottom: 32px; 
+    min-width: 0; 
+    align-items: stretch; 
+}
+
+.bottom-grid { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr 1fr; 
+    gap: 28px; 
+    margin-bottom: 32px; 
+    min-width: 0; 
+    align-items: stretch; 
+}
+
+.chart-card, .ai-card { 
+    background: rgba(30, 41, 59, 0.55); 
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08); 
+    padding: 28px 32px; 
+    border-radius: 24px; 
+    min-width: 0; 
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.25);
+    box-sizing: border-box; 
+    display: flex;
+    flex-direction: column;
+}
+
+.ai-card {
+    border-color: rgba(139, 92, 246, 0.25);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.8));
+}
+
+.card-title { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    font-size: 1.25rem; 
+    font-weight: 800;
+    color: #f8fafc; 
+    margin: 0 0 22px 0; 
+}
+
+.ai-content { 
+    max-height: 380px; 
+    overflow-y: auto; 
+    padding-right: 10px; 
+    font-size: 1.02rem;
+    line-height: 1.7;
+    color: #cbd5e1;
+}
+
 .ai-content::-webkit-scrollbar { width: 6px; }
 .ai-content::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); border-radius: 4px; }
-.ai-content::-webkit-scrollbar-thumb { background: rgba(139,92,246,0.3); border-radius: 4px; }
-.ai-content::-webkit-scrollbar-thumb:hover { background: rgba(139,92,246,0.6); }
+.ai-content::-webkit-scrollbar-thumb { background: rgba(139,92,246,0.4); border-radius: 4px; }
+.ai-content::-webkit-scrollbar-thumb:hover { background: rgba(139,92,246,0.7); }
 
 @media (max-width: 1024px) {
     .middle-grid { grid-template-columns: 1fr; }
     .bottom-grid { grid-template-columns: 1fr; }
 }
 
-.progress-bar-group { margin-bottom: 16px; }
-.progress-header { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; color: #cbd5e1; margin-bottom: 8px; }
-.progress-track { height: 8px; background: rgba(0,0,0,0.3); border-radius: 4px; overflow: hidden; }
-.progress-fill { height: 100%; border-radius: 4px; transition: width 1s; }
+@media (max-width: 640px) {
+    .metrics-grid { grid-template-columns: 1fr 1fr; gap: 14px; }
+    .metric-card { padding: 18px 20px; border-radius: 18px; }
+    .metric-value { font-size: 1.8rem; }
+    .chart-card, .ai-card { padding: 20px 18px; border-radius: 20px; }
+}
 
-.btn-primary { background: linear-gradient(135deg, #0ea5e9, #3b82f6); color: white; border: none; padding: 10px 20px; border-radius: 12px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: opacity 0.2s; }
-.btn-primary:hover { opacity: 0.9; }
+@media (max-width: 360px) {
+    .metrics-grid { grid-template-columns: 1fr; gap: 12px; }
+}
+
+
+.progress-bar-group { margin-bottom: 20px; }
+.progress-header { display: flex; justify-content: space-between; font-size: 0.95rem; font-weight: 700; color: #cbd5e1; margin-bottom: 10px; }
+.progress-track { height: 10px; background: rgba(0,0,0,0.35); border-radius: 6px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 6px; transition: width 1s; }
+
+.btn-primary { 
+    background: linear-gradient(135deg, #0ea5e9, #3b82f6); 
+    color: white; 
+    border: none; 
+    padding: 12px 24px; 
+    border-radius: 14px; 
+    font-weight: 700; 
+    font-size: 1rem;
+    cursor: pointer; 
+    display: inline-flex; 
+    align-items: center; 
+    gap: 10px; 
+    box-shadow: 0 4px 15px rgba(14, 165, 233, 0.35);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); 
+}
+.btn-primary:hover { 
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(14, 165, 233, 0.5);
+    opacity: 0.98; 
+}
 
 /* Modal Styles */
-.modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11,17,32,0.8); backdrop-filter: blur(5px); z-index: 1000; align-items: center; justify-content: center; }
-.modal-content { background: #1e293b; border: 1px solid rgba(255,255,255,0.1); padding: 40px; border-radius: 24px; width: 90%; max-width: 800px; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
-.close-btn { position: absolute; top: 20px; right: 20px; background: transparent; border: none; color: #94a3b8; font-size: 1.5rem; cursor: pointer; }
-.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+.modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11,17,32,0.85); backdrop-filter: blur(8px); z-index: 1000; align-items: center; justify-content: center; }
+.modal-content { background: #1e293b; border: 1px solid rgba(255,255,255,0.12); padding: 40px; border-radius: 24px; width: 90%; max-width: 820px; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6); }
+.close-btn { position: absolute; top: 20px; right: 20px; background: transparent; border: none; color: #94a3b8; font-size: 1.8rem; cursor: pointer; transition: color 0.2s; }
+.close-btn:hover { color: #f8fafc; }
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 22px; }
 .field { display: flex; flex-direction: column; gap: 8px; }
-.field label { font-size: 0.9rem; font-weight: 600; color: #cbd5e1; }
-.field input, .field select { padding: 12px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: #f8fafc; font-family: 'Outfit'; outline: none; box-sizing: border-box;}
-.loader { border: 3px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-right: 8px;}
+.field label { font-size: 0.95rem; font-weight: 700; color: #cbd5e1; }
+.field input, .field select { padding: 14px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.12); border-radius: 14px; color: #f8fafc; font-family: 'Outfit'; font-size: 1rem; outline: none; box-sizing: border-box; transition: border-color 0.2s;}
+.field input:focus, .field select:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
+.loader { border: 3px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; width: 22px; height: 22px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-right: 8px;}
 </style>
 
+
 <!-- DASHBOARD HEADER -->
-<header class="top-header" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 32px;">
+<header class="top-header" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 32px; flex-wrap: wrap; gap: 16px;">
     <div class="welcome-text">
         <h1 class="welcome-title" style="font-size: 2.2rem; font-weight: 800; color: #f8fafc; margin: 0 0 8px 0;">Welcome back, <span style="color:#3b82f6;">{{ session.get('username') }}</span> 👋</h1>
-        <p class="welcome-subtitle" style="color: #94a3b8; margin: 0; font-size: 1.05rem;">Here's your wellness overview for today</p>
+        <p class="welcome-subtitle" style="color: #94a3b8; margin: 0; font-size: 1.05rem;">Here's your wellness overview and personalized health recommendations for today.</p>
     </div>
-    <div class="header-actions" style="display: flex; gap: 12px; align-items: center;">
-        <a href="/" style="background: rgba(255,255,255,0.1); color: #f8fafc; border: 1px solid rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 12px; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 8px; transition: all 0.2s;">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:20px;height:20px;"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-            Home
-        </a>
-        <button class="btn-primary" onclick="openDataModal()">+ Add Daily Data</button>
+    <div class="header-actions" style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; width: 100%; max-width: 400px;">
+        <button class="btn-primary btn-mobile-full" onclick="openDataModal()" style="flex-grow: 1; padding: 14px 24px; font-size: 1.05rem; justify-content: center;">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:22px;height:22px;"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path></svg>
+            + Add Daily Data
+        </button>
     </div>
 </header>
+
+<!-- PERSONALIZED FEATURE HUB FOR MOBILE & DESKTOP -->
+<section class="feature-hub-section" style="margin-bottom: 32px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h2 style="font-size: 1.35rem; font-weight: 800; color: #f8fafc; margin: 0; display: flex; align-items: center; gap: 8px;">
+            ⚡ Personalized Wellness Plans
+        </h2>
+        <span style="font-size: 0.85rem; color: #94a3b8; font-weight: 600;">Explore Recommendations</span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+        <!-- AI Root Cause Card -->
+        <div style="background: rgba(139, 92, 246, 0.12); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                    <div style="font-size: 1.6rem; background: rgba(139, 92, 246, 0.2); width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">🧠</div>
+                    <div>
+                        <div style="font-weight: 800; color: #f8fafc; font-size: 1.1rem;">AI Insights</div>
+                        <div style="font-size: 0.82rem; color: #c4b5fd;">Root cause analysis & health predictions</div>
+                    </div>
+                </div>
+                <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 16px; line-height: 1.5;">Personalized root cause detection and smart wellness recommendations powered by AI.</p>
+            </div>
+            <a href="/ai-insights" class="spa-link btn-primary btn-mobile-full" data-route="/ai-insights" style="background: linear-gradient(135deg, #8b5cf6, #6366f1); justify-content: center; font-size: 0.95rem;">
+                ✨ View AI Insights
+            </a>
+        </div>
+
+        <!-- Workout Card -->
+        <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                    <div style="font-size: 1.6rem; background: rgba(16, 185, 129, 0.2); width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">🏋️</div>
+                    <div>
+                        <div style="font-weight: 800; color: #f8fafc; font-size: 1.1rem;">Workout Plan</div>
+                        <div style="font-size: 0.82rem; color: #6ee7b7;">Custom physical activity routine</div>
+                    </div>
+                </div>
+                <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 16px; line-height: 1.5;">Tailored exercise regimen matching your stamina and fitness goals.</p>
+            </div>
+            <a href="/workout-analysis" class="spa-link btn-secondary btn-mobile-full" data-route="/workout-analysis" style="justify-content: center; font-size: 0.95rem; border-color: rgba(16, 185, 129, 0.4); color: #6ee7b7;">
+                🏋️ View Workout Plan
+            </a>
+        </div>
+
+        <!-- Diet & Nutrition Card -->
+        <div style="background: rgba(14, 165, 233, 0.1); border: 1px solid rgba(14, 165, 233, 0.25); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                    <div style="font-size: 1.6rem; background: rgba(14, 165, 233, 0.2); width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">🥗</div>
+                    <div>
+                        <div style="font-weight: 800; color: #f8fafc; font-size: 1.1rem;">Diet &amp; Nutrition</div>
+                        <div style="font-size: 0.82rem; color: #38bdf8;">Meal breakdown & macro targets</div>
+                    </div>
+                </div>
+                <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 16px; line-height: 1.5;">Balanced meal plans, hydration targets, and optimal protein guidance.</p>
+            </div>
+            <a href="/diet-analysis" class="spa-link btn-secondary btn-mobile-full" data-route="/diet-analysis" style="justify-content: center; font-size: 0.95rem; border-color: rgba(14, 165, 233, 0.4); color: #38bdf8;">
+                🥗 View Diet Plan
+            </a>
+        </div>
+
+        <!-- Lifestyle Card -->
+        <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.25); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                    <div style="font-size: 1.6rem; background: rgba(245, 158, 11, 0.2); width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">🏠</div>
+                    <div>
+                        <div style="font-weight: 800; color: #f8fafc; font-size: 1.1rem;">Lifestyle Routine</div>
+                        <div style="font-size: 0.82rem; color: #fcd34d;">Sleep hygiene & work balance</div>
+                    </div>
+                </div>
+                <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 16px; line-height: 1.5;">Optimal sleep schedules, screen time control, and work-life balance.</p>
+            </div>
+            <a href="/lifestyle-analysis" class="spa-link btn-secondary btn-mobile-full" data-route="/lifestyle-analysis" style="justify-content: center; font-size: 0.95rem; border-color: rgba(245, 158, 11, 0.4); color: #fcd34d;">
+                🏠 View Lifestyle Plan
+            </a>
+        </div>
+    </div>
+</section>
 
 <!-- EMPTY STATE -->
 <div id="emptyState" style="display:none; flex-direction:column; align-items:center; justify-content:center; height:60vh; text-align:center;">
@@ -97,23 +308,25 @@
     <!-- MIDDLE GRID -->
     <div class="middle-grid">
         <div class="chart-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <h3 class="card-title" style="margin: 0;">📈 Health Overview</h3>
-                <div style="display: flex; gap: 12px; font-size: 0.78rem; font-weight: 600; color: #94a3b8;">
-                    <span style="display: inline-flex; align-items: center; gap: 4px;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981; display: inline-block;"></span> Steps</span>
-                    <span style="display: inline-flex; align-items: center; gap: 4px;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #8b5cf6; display: inline-block;"></span> Sleep</span>
-                    <span style="display: inline-flex; align-items: center; gap: 4px;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #f59e0b; display: inline-block;"></span> Stress</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                <h3 class="card-title" style="margin: 0; font-size: 1.3rem;">📈 Health Overview</h3>
+                <div style="display: flex; gap: 14px; font-size: 0.88rem; font-weight: 700; color: #94a3b8;">
+                    <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 10px; height: 10px; border-radius: 50%; background: #10b981; display: inline-block;"></span> Steps</span>
+                    <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 10px; height: 10px; border-radius: 50%; background: #8b5cf6; display: inline-block;"></span> Sleep</span>
+                    <span style="display: inline-flex; align-items: center; gap: 6px;"><span style="width: 10px; height: 10px; border-radius: 50%; background: #f59e0b; display: inline-block;"></span> Stress</span>
                 </div>
             </div>
-            <div style="position: relative; height: 240px; width: 100%; min-height: 240px; max-height: 240px; overflow: hidden;">
+            <div style="position: relative; height: 320px; width: 100%; min-height: 320px; overflow: hidden;">
                 <canvas id="overviewChart"></canvas>
             </div>
         </div>
         <div class="ai-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <h3 class="card-title" style="margin: 0; font-size: 1.1rem; color: #f8fafc;">✨ AI Wellness Summary</h3>
-                <button onclick="openAiModal()" style="background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.3); color: #c4b5fd; padding: 4px 10px; border-radius: 8px; font-size: 0.78rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s;" onmouseover="this.style.background='rgba(139,92,246,0.3)'" onmouseout="this.style.background='rgba(139,92,246,0.15)'">
-                    ⤢ Expand
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 10px;">
+                <h3 class="card-title" style="margin: 0; font-size: 1.25rem; color: #f8fafc; display: flex; align-items: center; gap: 8px;">
+                    <span>✨</span> AI Wellness Summary
+                </h3>
+                <button onclick="openAiModal()" style="background: rgba(139, 92, 246, 0.2); border: 1px solid rgba(139, 92, 246, 0.4); color: #c4b5fd; padding: 8px 16px; border-radius: 12px; font-size: 0.88rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s;" onmouseover="this.style.background='rgba(139,92,246,0.4)'" onmouseout="this.style.background='rgba(139,92,246,0.2)'">
+                    ⤢ Expand AI View
                 </button>
             </div>
             <div class="ai-content markdown-body" id="aiSummaryBox">
@@ -121,6 +334,7 @@
             </div>
         </div>
     </div>
+
 
     <!-- BOTTOM GRID -->
     <div class="bottom-grid">
@@ -133,14 +347,15 @@
         
         <div class="chart-card">
             <h3 class="card-title">🎯 Weekly Progress</h3>
-            <div style="position: relative; height: 200px; width: 100%; min-height: 200px; max-height: 200px; overflow: hidden; display: flex; justify-content: center; align-items: center;">
+            <div style="position: relative; height: 250px; width: 100%; min-height: 250px; overflow: hidden; display: flex; justify-content: center; align-items: center;">
                 <canvas id="weeklyChart"></canvas>
                 <div style="position: absolute; text-align: center; pointer-events: none;">
-                    <div style="font-size:2rem; font-weight:800; color:#f8fafc;" id="overallProgress">--%</div>
-                    <div style="font-size:0.8rem; color:#94a3b8;">Overall</div>
+                    <div style="font-size:2.2rem; font-weight:800; color:#f8fafc;" id="overallProgress">--%</div>
+                    <div style="font-size:0.85rem; color:#94a3b8; font-weight:600;">Overall</div>
                 </div>
             </div>
         </div>
+
         
         <div class="chart-card">
             <h3 class="card-title">🏆 Achievements <a href="#" style="font-size:0.8rem; color:#3b82f6; text-decoration:none;">View All</a></h3>
@@ -224,9 +439,14 @@
             <!-- Populated by JS -->
         </div>
 
-        <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.08);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 24px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.08); flex-wrap: wrap; gap: 12px;">
+            <button onclick="downloadElementAsReport('AI Wellness Summary', 'aiModalContent', 'wellnessiq_ai_summary.txt')" 
+                    style="background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); color: #60a5fa; padding: 10px 20px; border-radius: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+                📥 Download AI Plan
+            </button>
             <button class="btn-primary" style="background: rgba(255,255,255,0.1); color: #f8fafc; border: 1px solid rgba(255,255,255,0.2);" onclick="closeAiModal()">Close</button>
         </div>
+
     </div>
 </div>
 

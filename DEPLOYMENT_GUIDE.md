@@ -58,7 +58,7 @@ Render provides free HTTPS web service hosting connected directly to GitHub.
 ### Step 3: Add Environment Variables
 Scroll to **Environment Variables** and add:
 - `SECRET_KEY` = `a_strong_random_secret_key_123!`
-- `GEMINI_API_KEY` = `your_gemini_api_key_here` (optional, fallback key is configured)
+- `GEMINI_API_KEY` = `your_gemini_api_key_here` (Required for AI insights)
 
 ### Step 4: Deploy & Verify
 1. Click **Create Web Service**.
@@ -74,19 +74,32 @@ Scroll to **Environment Variables** and add:
 
 PythonAnywhere is specifically designed for Python web apps. It keeps your SQLite database (`users.db`) saved permanently on disk with **zero cold-start latency**.
 
-### Steps:
+### Steps (Fixed for 512 MB Free Disk Quota):
+
 1. Create a free account at [PythonAnywhere.com](https://www.pythonanywhere.com/).
 2. Go to the **Consoles** tab and open a **Bash Console**.
-3. Clone your GitHub repository:
+3. Clear pip cache and remove any half-installed virtual environment:
+   ```bash
+   rm -rf ~/.cache/pip
+   rm -rf routine-ai/venv
+   ```
+4. Clone your GitHub repository (if not already cloned):
    ```bash
    git clone https://github.com/YOUR_GITHUB_USERNAME/routine-ai.git
    cd routine-ai
    ```
-4. Create a virtual environment and install dependencies:
+5. Create a virtual environment using `--system-site-packages` (this re-uses PythonAnywhere's pre-installed `pandas`, `scikit-learn`, `numpy`, `Flask` to save ~400 MB disk space):
    ```bash
-   python3 -m venv venv
+   python3 -m venv --system-site-packages venv
    source venv/bin/activate
-   pip install -r requirements.txt
+   ```
+6. Install remaining dependencies using `--no-cache-dir`:
+   ```bash
+   pip install --no-cache-dir -r requirements.txt
+   ```
+7. Clean up pip cache:
+   ```bash
+   rm -rf ~/.cache/pip
    ```
 5. Go to the **Web** tab in PythonAnywhere:
    - Click **Add a new web app**.

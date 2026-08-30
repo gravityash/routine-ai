@@ -6,15 +6,16 @@
 </div>
 
 <!-- CLINICAL BASELINE -->
-<div class="baseline-card" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 24px 32px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px;">
-    <div class="baseline-title" style="display: flex; flex-direction: column; gap: 4px; border-right: 1px solid rgba(255,255,255,0.1); padding-right: 32px;">
-        <h3 style="margin: 0; display: flex; align-items: center; gap: 8px; font-size: 1.1rem; color: #f8fafc;"><svg fill="none" stroke="#3b82f6" viewBox="0 0 24 24" style="width:24px;height:24px;stroke-width:2;"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg> Clinical Baseline</h3>
-        <p id="baselineSub" style="margin: 0; font-size: 0.85rem; color: #94a3b8; font-weight: 500;">ML Routine Suggestion: Computing...</p>
+<div class="baseline-card" style="background: rgba(30, 41, 59, 0.55); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 28px 36px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; flex-wrap: wrap; gap: 24px;">
+    <div class="baseline-title" style="display: flex; flex-direction: column; gap: 6px; border-right: 1px solid rgba(255,255,255,0.1); padding-right: 32px; min-width: 220px;">
+        <h3 style="margin: 0; display: flex; align-items: center; gap: 10px; font-size: 1.25rem; color: #f8fafc; font-weight: 800;"><svg fill="none" stroke="#3b82f6" viewBox="0 0 24 24" style="width:26px;height:26px;stroke-width:2;"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg> Clinical Baseline</h3>
+        <p id="baselineSub" style="margin: 0; font-size: 0.9rem; color: #94a3b8; font-weight: 600;">ML Routine Suggestion: Computing...</p>
     </div>
-    <div style="display:flex; gap:40px;" id="baselineScoresGrid">
+    <div style="display: flex; gap: 28px; flex-wrap: wrap; justify-content: space-between; flex-grow: 1;" id="baselineScoresGrid">
         <!-- Injected via JS -->
     </div>
 </div>
+
 
 <!-- INSIGHT CARDS -->
 <div id="insightCardsContainer">
@@ -22,14 +23,25 @@
 </div>
 
 <!-- DYNAMIC AI DEEP DIVE -->
-<div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 32px; margin-top: 32px;">
-    <h3 style="color: #f8fafc; margin: 0 0 20px 0; display: flex; align-items: center; gap: 12px;">
-        <span style="font-size: 1.5rem;">🤖</span> Detailed AI Coaching Plan
-    </h3>
-    <div id="dynamicAiContainer" class="markdown-body" style="color: #cbd5e1; line-height: 1.6;">
+<div style="background: rgba(30, 41, 59, 0.55); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 32px; margin-top: 32px; box-shadow: 0 10px 30px -5px rgba(0,0,0,0.25);">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 14px;">
+        <h3 style="color: #f8fafc; margin: 0; display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 1.35rem;">
+            <span style="font-size: 1.5rem;">🤖</span> Detailed AI Coaching Plan
+        </h3>
+        <button onclick="downloadElementAsReport('Detailed ' + (document.getElementById('pageTitle') ? document.getElementById('pageTitle').innerText : 'AI Plan'), 'dynamicAiContainer', 'wellnessiq_detailed_plan.txt')" 
+                class="btn-mobile-block"
+                style="background: rgba(59, 130, 246, 0.18); border: 1px solid rgba(59, 130, 246, 0.35); color: #60a5fa; padding: 10px 20px; border-radius: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.92rem; transition: all 0.2s;"
+                onmouseover="this.style.background='rgba(59, 130, 246, 0.35)'" 
+                onmouseout="this.style.background='rgba(59, 130, 246, 0.18)'">
+            📥 Download Plan
+        </button>
+    </div>
+    <div id="dynamicAiContainer" class="markdown-body" style="color: #cbd5e1; line-height: 1.7;">
         <div class="loader" style="border: 3px solid rgba(255,255,255,0.3); border-top-color: #3b82f6; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; display: inline-block;"></div> Generating dynamic plan...
     </div>
 </div>
+
+
 
 <script>
 (function() {
@@ -195,61 +207,61 @@
                 const stat = getStatus(ts.val);
                 return `
                 <div class="baseline-score" style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-                    <div style="font-size:0.75rem; color:#64748b; font-weight:600; text-transform:uppercase;">${ts.label} Score</div>
+                    <div style="font-size:0.82rem; color:#94a3b8; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;">${ts.label} Score</div>
                     <div style="display:flex; align-items:center; gap:12px;">
-                        <div style="width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; background:${ts.bg}; color:white;">${ts.icon}</div>
-                        <div style="font-size: 1.8rem; font-weight: 800; display: flex; align-items: baseline; gap: 4px; color:#f8fafc;">${ts.val} <span style="font-size: 0.9rem; font-weight: 600; color: #94a3b8;">/100</span></div>
+                        <div style="width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; background:${ts.bg}; color:white; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">${ts.icon}</div>
+                        <div style="font-size: 2.1rem; font-weight: 800; display: flex; align-items: baseline; gap: 4px; color:#f8fafc;">${ts.val} <span style="font-size: 0.95rem; font-weight: 600; color: #94a3b8;">/100</span></div>
                     </div>
-                    <div style="font-size: 0.85rem; font-weight: 700; color:${stat.color};">${stat.text}</div>
+                    <div style="font-size: 0.9rem; font-weight: 800; color:${stat.color};">${stat.text}</div>
                 </div>`;
             }).join('');
 
             const generateCircSVG = (score, color) => {
-                const circ = 2 * Math.PI * 65; 
+                const circ = 2 * Math.PI * 68; 
                 const offset = circ - (score / 100) * circ;
                 return `
-                <svg viewBox="0 0 150 150" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform: rotate(-90deg);">
-                    <circle cx="75" cy="75" r="65" fill="none" stroke-width="12" stroke-linecap="round" stroke="rgba(255,255,255,0.05)" />
-                    <circle cx="75" cy="75" r="65" fill="none" stroke-width="12" stroke-linecap="round" stroke="${color}" stroke-dasharray="${circ}" stroke-dashoffset="${offset}" style="transition: stroke-dashoffset 1s ease;" />
+                <svg viewBox="0 0 160 160" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform: rotate(-90deg);">
+                    <circle cx="80" cy="80" r="68" fill="none" stroke-width="12" stroke-linecap="round" stroke="rgba(255,255,255,0.06)" />
+                    <circle cx="80" cy="80" r="68" fill="none" stroke-width="12" stroke-linecap="round" stroke="${color}" stroke-dasharray="${circ}" stroke-dashoffset="${offset}" style="transition: stroke-dashoffset 1s ease;" />
                 </svg>`;
             };
 
             document.getElementById('insightCardsContainer').innerHTML = config.cards.map(c => {
                 const stat = getStatus(c.score);
                 return `
-                <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 32px; margin-bottom: 24px;">
-                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
-                        <h3 style="margin: 0; display: flex; align-items: center; gap: 12px; font-size: 1.3rem; color:#f8fafc;">
-                            <div style="width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; background:${c.bg}; color:white;">${c.icon}</div>
+                <div style="background: rgba(30, 41, 59, 0.55); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 32px; margin-bottom: 28px; box-shadow: 0 10px 30px -5px rgba(0,0,0,0.25);">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; flex-wrap: wrap; gap: 12px;">
+                        <h3 style="margin: 0; display: flex; align-items: center; gap: 14px; font-size: 1.4rem; color:#f8fafc; font-weight: 800;">
+                            <div style="width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; background:${c.bg}; color:white; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">${c.icon}</div>
                             ${c.title}
                         </h3>
-                        <div style="font-size: 0.8rem; padding: 4px 12px; border-radius: 16px; border: 1px solid; font-weight: 600; color:${stat.color}; border-color:${stat.color}; background:rgba(255,255,255,0.05);">${stat.text}</div>
+                        <div style="font-size: 0.88rem; padding: 6px 16px; border-radius: 20px; border: 1px solid; font-weight: 700; color:${stat.color}; border-color:${stat.color}; background:rgba(255,255,255,0.05);">${stat.text}</div>
                     </div>
                     
-                    <div style="display: grid; grid-template-columns: 200px 1fr 350px; gap: 40px; align-items: center;">
-                        <div style="position: relative; width: 150px; height: 150px; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+                    <div class="analysis-grid-inner">
+                        <div style="position: relative; width: 160px; height: 160px; display: flex; align-items: center; justify-content: center; flex-direction: column; margin: 0 auto;">
                             ${generateCircSVG(c.score, stat.color)}
                             <div style="position:absolute; text-align:center; top:50%; transform:translateY(-50%);">
-                                <div style="font-size: 2.2rem; font-weight: 800; color: ${stat.color}; margin-bottom: 4px;">${c.score}%</div>
-                                <div style="font-size: 0.8rem; font-weight: 600; color: #94a3b8; text-align: center;">${c.label}</div>
+                                <div style="font-size: 2.4rem; font-weight: 800; color: ${stat.color}; margin-bottom: 2px; line-height: 1;">${c.score}%</div>
+                                <div style="font-size: 0.85rem; font-weight: 700; color: #94a3b8; text-align: center;">${c.label}</div>
                             </div>
                         </div>
                         
-                        <div style="display: flex; flex-direction: column; gap: 16px;">
+                        <div style="display: flex; flex-direction: column; gap: 18px;">
                             ${c.points.map(p => `
-                                <div style="display: flex; gap: 12px; align-items: flex-start;">
-                                    <div style="width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; background:${stat.color};"></div>
-                                    <div style="font-size: 0.95rem; line-height: 1.5; color: #cbd5e1;"><strong style="color: #f8fafc;">${p.t}:</strong> ${p.d}</div>
+                                <div style="display: flex; gap: 14px; align-items: flex-start;">
+                                    <div style="width: 10px; height: 10px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; background:${stat.color}; box-shadow: 0 0 8px ${stat.color};"></div>
+                                    <div style="font-size: 1rem; line-height: 1.6; color: #cbd5e1;"><strong style="color: #f8fafc; font-size: 1.05rem;">${p.t}:</strong> ${p.d}</div>
                                 </div>
                             `).join('')}
                         </div>
 
-                        <div style="background: rgba(0,0,0,0.2); border-radius: 16px; padding: 24px; height: 100%; box-sizing: border-box; border: 1px solid rgba(255,255,255,0.05);">
-                            <div style="display: flex; align-items: center; gap: 8px; font-weight: 700; color: #10b981; margin-bottom: 16px;">⭐ Top Recommendation</div>
-                            <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div style="background: rgba(15, 23, 42, 0.6); border-radius: 20px; padding: 24px; height: 100%; box-sizing: border-box; border: 1px solid rgba(255,255,255,0.08);">
+                            <div style="display: flex; align-items: center; gap: 8px; font-weight: 800; color: #10b981; margin-bottom: 18px; font-size: 1.05rem;">⭐ Top Recommendations</div>
+                            <div style="display: flex; flex-direction: column; gap: 14px;">
                                 ${c.recs.map(r => `
-                                    <div style="display: flex; align-items: center; gap: 12px; font-size: 0.9rem; color: #e2e8f0; font-weight: 500;">
-                                        <div style="width: 32px; height: 32px; background: rgba(255,255,255,0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center;">${r.icon}</div>
+                                    <div style="display: flex; align-items: center; gap: 12px; font-size: 0.95rem; color: #e2e8f0; font-weight: 600;">
+                                        <div style="width: 36px; height: 36px; background: rgba(255,255,255,0.06); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;">${r.icon}</div>
                                         ${r.text}
                                     </div>
                                 `).join('')}
@@ -258,6 +270,7 @@
                     </div>
                 </div>`;
             }).join('');
+
 
             // Fetch dynamic AI analysis
             const aiContainer = document.getElementById('dynamicAiContainer');

@@ -110,9 +110,20 @@ def generate_plan(prediction):
 # ==========================================
 # GEMINI SETUP (AUTO MODEL DETECTION)
 # ==========================================
+import os
 import google.generativeai as genai
 
-genai.configure(api_key="AIzaSyB9AGCCZxR7-bjS69OYHgd8R40RTIu--Dk")  # 🔑 Replace this
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
+gemini_key = os.environ.get("GEMINI_API_KEY")
+
+if gemini_key:
+    genai.configure(api_key=gemini_key)
+
 
 
 def get_working_model():
