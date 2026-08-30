@@ -9,7 +9,7 @@
 
 > **An AI-powered, multi-page personal health and wellness platform that combines classic machine learning predictive baselines with Google Gemini LLM generative coaching.**
 
-🌐 **Live Web Application**: [gravityash.pythonanywhere.com](http://gravityash.pythonanywhere.com/)
+🌐 **Live Web Application**: [routineAI.pythonanywhere.com](https://routineai.pythonanywhere.com/)
 
 ---
 
